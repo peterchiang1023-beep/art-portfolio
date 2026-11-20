@@ -277,7 +277,7 @@
           <h1 class="giant small"><span>${esc(SITE.name.split(" ")[0])}</span><span class="nw">${esc(SITE.name.split(" ").slice(1).join(" "))}</span></h1>
         </section>
         ${row(
-          `<figure class="portrait duo"><img src="images/portrait.jpg" alt="Portrait of ${esc(SITE.name)}"></figure><p class="label thin">also ${esc(SITE.alsoKnownAs)}</p>`,
+          `<figure class="portrait"><img src="images/portrait.jpg" width="1409" height="1803" alt="Portrait of ${esc(SITE.name)}"></figure><p class="label thin">also ${esc(SITE.alsoKnownAs)}</p>`,
           `<div class="prose">${paras(SITE.bio)}</div><p><a class="button" href="https://youtu.be/${esc(SITE.showreel)}" target="_blank" rel="noopener">Movement showreel ↗</a></p>`,
           { cls: "about-main" }
         )}

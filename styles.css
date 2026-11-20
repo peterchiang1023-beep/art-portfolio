@@ -363,7 +363,9 @@ body.spot .card.is-lit { color: var(--paper); }
 }
 .button:hover { background: transparent; color: var(--fg); }
 
-.portrait { margin: 0 0 12px; aspect-ratio: 367 / 400; }
+/* the portrait is shown as photographed: true black & white, sharp, no duotone */
+.portrait { margin: 0 0 12px; background: var(--black); }
+.portrait img { width: 100%; height: auto; }
 .about-main .row-label { flex-direction: column; }
 .about-main .row-label > * { position: static; }
 .about-main .prose + p { margin-top: 12px; }
