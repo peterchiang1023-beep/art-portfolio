@@ -58,7 +58,7 @@ button { font: inherit; color: inherit; }
   text-transform: uppercase; letter-spacing: -0.035em; line-height: .84;
 }
 .giant { font-size: min(12.6vw, 196px); }
-.giant span { display: block; }
+.giant > span { display: block; }
 .giant.small { font-size: min(9vw, 140px); }
 .title { font-size: clamp(38px, 6.4vw, 100px); line-height: .9; overflow-wrap: anywhere; max-width: 16ch; }
 em.soft {
@@ -271,7 +271,7 @@ body.spot .card.is-lit { color: var(--paper); }
   background: var(--black); color: var(--red); display: flex; align-items: flex-end; padding: 16px;
   transition: background-color .45s;
 }
-.poster span {
+.poster > span {
   font-stretch: 125%; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em;
   font-size: clamp(22px, 2.4vw, 34px); line-height: .92;
 }
@@ -301,7 +301,7 @@ body.spot .card.is-lit { color: var(--paper); }
   transition: background-color .25s, color .25s;
 }
 .ways a:nth-child(odd) { border-right: 1px solid var(--rule); }
-.ways span { font-stretch: 125%; font-weight: 800; text-transform: uppercase; font-size: clamp(26px, 3.4vw, 50px); line-height: .9; letter-spacing: -0.02em; }
+.ways a > span { font-stretch: 125%; font-weight: 800; text-transform: uppercase; font-size: clamp(26px, 3.4vw, 50px); line-height: .9; letter-spacing: -0.02em; }
 .ways small { font-stretch: 125%; text-transform: uppercase; font-size: 12px; }
 .ways a:hover { background: var(--black); color: var(--red); }
 @media (max-width: 520px) { .ways { grid-template-columns: 1fr; } .ways a:nth-child(odd) { border-right: 0; } }
@@ -385,3 +385,17 @@ body.spot .card.is-lit { color: var(--paper); }
 .footer-cols a:hover { color: var(--paper); }
 .copyright { margin-top: 64px; font-weight: 400; }
 @media (max-width: 760px) { .footer-cols { grid-template-columns: 1fr; } }
+
+/* ---------- the hidden wave (wave.js) ---------- */
+.w { display: inline-block; white-space: nowrap; }
+.ch { display: inline-block; transform-origin: 50% 70%; }
+.wave-rules {
+  position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: visible;
+}
+.wave-rules path { fill: none; stroke: var(--rule); stroke-width: 1; transition: stroke .45s; }
+.has-wave .rules span { border-color: transparent !important; }
+/* the pointer itself is hidden — only the wave shows where it is.
+   It returns over links, buttons and media so people can still see what they click. */
+.has-wave, .has-wave * { cursor: none; }
+.has-wave a, .has-wave a *, .has-wave button, .has-wave button *,
+.has-wave .video, .has-wave .video *, .has-wave .menu, .has-wave .menu * { cursor: pointer; }

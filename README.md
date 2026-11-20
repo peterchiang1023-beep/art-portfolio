@@ -10,6 +10,7 @@ It's plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
 - **Melting:** coral red (#FF4040), a soft italic serif for *(in/to)*, duotone images that come into full colour on hover while the page goes dark.
 - **Ritual:** the Delphic E (stem, bar, outward arcs), with square-cut ends like the type. Its loop is stretched into an ellipse, so repeated it becomes an endless chain (|0|0|0|) whose waists read as a sideways hourglass and, tilted, like DNA. The chains run diagonally behind the hero, page titles and footer and drift slowly. A bold, liquid ink-blot mask eats the field, with drips and droplets, and a blurred copy bleeds around it like ink in water.
   Graphics: `images/delphic-tile.svg` / `delphic-tile-ink.svg` (crisp and bled chain), `melt-mask.svg` / `melt-mask-ink.svg` (blot and bleed), `delphic-e.svg` (diagonal mark: stem, loop, stem).
+- **The hidden wave** (`wave.js`): the pointer is hidden; an invisible swell follows it slowly, with its own breathing rhythm. Display type lifts and sways letter by letter, reading text drifts by a pixel or two, the column rules bend and the Delphic E field warps like water. Images and videos are never touched. It is switched off on touch devices and for visitors who ask their system for reduced motion. Tuning values (follow speed, strength, reach, crest spacing) are at the top of the `frame()` function.
 
 ## Pages
 
