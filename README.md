@@ -28,4 +28,14 @@ Then go to http://localhost:8000.
 
 ## Publishing
 
-Push to the `main` branch. GitHub Pages serves the site from the repository root.
+Run:
+
+```bash
+./deploy.sh
+```
+
+It asks for a GitHub token (hidden as you type), creates the `art-portfolio` repository on your account if needed, pushes the site and turns on GitHub Pages. The token is used for that run only. It isn't saved anywhere, so you don't need `gh auth login`.
+
+Use a classic token with the `repo` scope, or a fine-grained token with **Administration**, **Contents** and **Pages** set to read and write.
+
+Run it again whenever you add work. It offers to commit your changes, then pushes them.
