@@ -1,0 +1,340 @@
+/* ==========================================================================
+   All the content of the site lives in this file.
+   Edit text here; the pages update automatically.
+
+   - Text marked  DRAFT  was written as a starting point — rewrite it in your voice.
+   - To add photos to a project: put files in images/<project-id>/ and list them
+     in that project's `gallery`, e.g. gallery: ["images/nine-songs/01.jpg"].
+   - `video` is a YouTube ID (the part after youtu.be/).
+   ========================================================================== */
+
+window.SITE = {
+  name: "Chiang Cheng-Te",
+  alsoKnownAs: "Peter · Pierre C",
+  motto: "Melting into structure",
+  roles: "Performer · Director · Designer · Trainer",
+  places: "Prague ⇄ Taipei",
+  email: "peterchiang1023@gmail.com",
+  showreel: "XjMPFx4pCHE",
+
+  // DRAFT — your artist statement (first person).
+  statement: [
+    "My work begins in the body and ends in a question.",
+    "Between structure and dissolution — Apollo and Dionysus, yin and yang — I look for the moment a form melts and something older comes through: ritual, longing, a sense of home that keeps moving between Taipei and Prague.",
+    "I perform, direct, design and train performers, but it is one practice: listening to the body as the place where identity, politics and poetry are negotiated.",
+  ],
+
+  // Bio (third person), based on your CV.
+  bio: [
+    "Chiang Cheng-Te is a Taiwanese performer, director and movement artist working between Prague and Taipei. He holds an MA in Authorial Acting from the Academy of Performing Arts in Prague (DAMU) and a double BA in Drama & Theatre and Chinese Literature from National Taiwan University.",
+    "His approach is rooted in an anthropological sensibility: he works closely with performers on embodied practice, while engaging with the dialogical and sociopolitical dimensions of the work and its relationship to the audience. His productions combine physical theatre, film, live music and video.",
+    "He is a trained instructor in the Theodoros Terzopoulos Method (Attis Theatre, Athens), assistant to Savvas Stroumpos, and assistant pedagogue in the Department of Scenography at DAMU. In 2025 his productions Nine Songs: Rituals of Longing and Terrorizers both received awards at the Academy of Performing Arts in Prague.",
+  ],
+};
+
+/* ---------- Selected works ------------------------------------------------
+   disciplines: used by the filter on the Works page.
+     "Directing" | "Performing" | "Film" | "Design"
+   ------------------------------------------------------------------------- */
+window.WORKS = [
+  {
+    id: "nine-songs",
+    title: "Nine Songs: Rituals of Longing",
+    year: 2025,
+    featured: true,
+    roles: ["Director", "Lead performer"],
+    disciplines: ["Directing", "Performing", "Film"],
+    form: "Movement · film · live music · scenography",
+    venue: "DAMU, Prague",
+    award: "Award — AMU Interfaculty Competition 2025",
+    video: "e59AnEMUDpU",
+    videoLabel: "Teaser",
+    summary: "An ancient Chinese shamanic poem reimagined through body, sound and film.",
+    description: [
+      "Nine Songs is a multidisciplinary project combining movement, film, live music and scenography. The piece explores loneliness and longing, resonating with an ancient Chinese shamanic poem that we reimagined in a contemporary form through body, sound and film — searching for an “air” that might offer resolution.",
+    ],
+    // DRAFT sections — fill these in; empty sections are hidden on the page.
+    source: "The Nine Songs (Jiu Ge) are ritual songs from the ancient Chu Ci anthology, sung to call down gods and spirits — songs of longing for a presence that never fully arrives.",
+    directorNote: [],   // e.g. ["Why I made this piece…", "…"]
+    process: [],        // e.g. ["We began with…", "…"]
+    gallery: [],        // e.g. ["images/nine-songs/01.jpg", "images/nine-songs/02.jpg"]
+    credits: [
+      ["Concept, direction & lead performer", "Chiang Cheng-Te"],
+      // ["Music", "Name"], ["Film", "Name"], ["Scenography", "Name"], …
+    ],
+  },
+  {
+    id: "terrorizers",
+    title: "Terrorizers",
+    year: 2025,
+    roles: ["Director", "Actor"],
+    disciplines: ["Directing", "Performing"],
+    form: "Physical theatre · live photo developing · video",
+    venue: "DAMU, Prague",
+    award: "Award — DAMU Internal Competition 2025",
+    video: "lIQTqdZWcLU",
+    summary: "Edward Yang’s film reimagined in a hybrid city of Taipei, Hong Kong and Prague.",
+    description: [
+      "This adaptation of Edward Yang’s The Terrorizers reimagines the film’s fragmented narrative in a contemporary hybrid city inspired by Taipei, Hong Kong and Prague, exploring urban alienation, systemic pressure and political resistance.",
+      "Through physical theatre, a live photo-developing process and video design, it portrays characters confronting surveillance, censorship and moral compromise. A collaboration between artists from Hong Kong and Taiwan, the production invites audiences into a visceral reflection on freedom, identity and power.",
+    ],
+  },
+  {
+    id: "ion",
+    title: "ION",
+    year: 2025,
+    roles: ["Author", "Performer"],
+    disciplines: ["Performing"],
+    form: "Authorial performance · poetry · voice · movement",
+    video: "i2pRy5uStRU",
+    summary: "Greek tragedy and Plato’s dialogue as a way into identity and the purpose of art.",
+    description: [
+      "ION is an authorial presentation inspired by Euripides’ tragedy Ion and Plato’s dialogue of the same name, interweaving them with personal stories and questions of identity, the purpose of making art, and how artistic material is generated.",
+      "It is also an experiment in working with poetry as a language — in speech, singing and movement — asking how poetry can be transformed into narrative.",
+    ],
+  },
+  {
+    id: "playground",
+    title: "Playground",
+    year: 2024,
+    roles: ["Performer"],
+    disciplines: ["Performing"],
+    form: "Physical theatre",
+    video: "kXuwUhrZbg8",
+    summary: "The imaginary playground of life — and the swing at its centre.",
+    description: [
+      "A physical theatre piece set in the imaginary playground of life — the playground where we all are, and where it is up to us how we act. The playground as a living space but also a thinking space whose boundaries we define. The swing in the middle of it is a symbol of joy, but also of the impermanence of life.",
+      "The crystal curtain of childhood has shattered and we are facing reality. Can we influence it, or are we just toys waiting for somebody to play with us?",
+    ],
+  },
+  {
+    id: "through",
+    title: "Through",
+    year: 2025,
+    roles: ["Physical performer", "Dancer"],
+    disciplines: ["Performing"],
+    form: "Physical theatre · new circus",
+    venue: "Trutnov CirkUFF Festival",
+    director: "Roman Horák",
+    summary: "Three sisters, three dreams, three secrets — and one man, phantom or reality?",
+    description: [
+      "Go through and lose the dream. The haze of our ideals lies on us like dust, and we sit in the darkness of our dining room with our heads in the clouds. One has everything and doesn’t want it, another wants what the first has, the third has nothing but her dream — covered in plastic.",
+      "Three sisters, three dreams, three secrets and one man — phantom or reality? A poetic comedy of physical theatre with the flavour of new circus.",
+    ],
+  },
+  {
+    id: "house-of-democracy",
+    title: "House of Democracy",
+    year: 2025,
+    roles: ["Lead actor"],
+    disciplines: ["Film", "Performing"],
+    form: "Film",
+    venue: "FAMU International",
+    director: "Chih Yu Lin",
+    summary: "Lead role in a FAMU International film.",
+  },
+  {
+    id: "now-that-im-not",
+    title: "Teď už není (Now That I’m Not)",
+    year: 2023,
+    roles: ["Physical performer"],
+    disciplines: ["Performing"],
+    form: "Physical theatre",
+    venue: "Trutnov CirkUFF Festival",
+    director: "Roman Horák",
+    summary: "Physical theatre at Trutnov CirkUFF Festival.",
+  },
+  {
+    id: "for-now-until-then-forever",
+    title: "For Now, Until Then, Forever",
+    originalTitle: "Zatím, do té doby, navždy",
+    year: 2024,
+    roles: ["Physical performer", "Ensemble"],
+    disciplines: ["Performing"],
+    form: "Site-specific theatre",
+    venue: "Continuo Theatre, České Budějovice",
+    director: "Pavel Štourač",
+    video: "RP21hPBwUmw",
+    summary: "Forgotten stories revealed in a hidden place in South Bohemia.",
+    description: [
+      "Continuo Theatre’s site-specific project brings together its artists with international performers and musicians to reveal a hidden place in České Budějovice. It focuses on untold or forgotten stories — small, seemingly insignificant happenings unfolding against the backdrop of great historical events.",
+    ],
+  },
+  {
+    id: "symphony-of-schmatz",
+    title: "Symphony of Schmatz",
+    year: 2024,
+    roles: ["Actor"],
+    disciplines: ["Film", "Performing"],
+    form: "Film",
+    director: "Allegra Stodolsky",
+    summary: "Independent film.",
+  },
+  {
+    id: "tri-kumpani",
+    title: "Tři kumpáni (Three Buddies)",
+    year: 2025,
+    roles: ["Musician (erhu)", "Performer"],
+    disciplines: ["Performing"],
+    form: "Theatre with live music",
+    venue: "Alfredu ve dvoře, Prague",
+    director: "Alžběta Trojanová",
+    summary: "Performing live on the erhu.",
+  },
+  {
+    id: "kill-the-banana-trees",
+    title: "Kill the Banana Trees",
+    year: 2022,
+    roles: ["Writer", "Director"],
+    disciplines: ["Directing", "Film"],
+    form: "Short film",
+    award: "Screened at the Edinburgh Taiwan Arts Festival 2022",
+    summary: "Short film, screened at the Edinburgh Taiwan Arts Festival.",
+  },
+  {
+    id: "woyzeck",
+    title: "WOYZECK",
+    year: 2022,
+    roles: ["Writer", "Director"],
+    disciplines: ["Directing", "Film"],
+    form: "Animation",
+    summary: "An animated Woyzeck.",
+  },
+  {
+    id: "remember-i-wish",
+    title: "Remember I Wish She Only Withered in Dream",
+    year: 2021,
+    roles: ["Playwright", "Director"],
+    disciplines: ["Directing"],
+    form: "Theatre",
+    venue: "Taipei",
+    summary: "Theatre, written and directed.",
+  },
+  {
+    id: "video-design",
+    title: "Video Design",
+    year: "2021–22",
+    roles: ["Video designer"],
+    disciplines: ["Design"],
+    form: "Video design for theatre, Taipei",
+    summary: "Video and scenography for theatre in Taipei, including two Taipei Fringe productions.",
+    description: [
+      "Before moving to Prague, I worked as a video designer for theatre in Taipei — building images, projection and space for other directors’ productions. The same thinking about image and space now runs through my own work, from the live photo developing in Terrorizers to the film layer of Nine Songs.",
+    ],
+    list: [
+      ["2022", "Ford", "Taipei Fringe Festival · dir. Jessica Tiffany Teng"],
+      ["2022", "I’m Not a Robot", "Taipei Fringe Festival · dir. Jerry Yeh"],
+      ["2022", "The Goat", "dir. Jerry Yeh"],
+      ["2022", "A Concise History of Future China", "dir. Chuen-Wei Su"],
+      ["2022", "The Arabian Nights", "Assistant designer · dir. Po-Shen Lu"],
+      ["2022", "Before Outdated 2.0", "Technician · 4 Chairs Theatre · dir. Tora Hsu"],
+      ["2021", "I’m Not a Robot", "dir. Wei-Chi Tu"],
+      ["2021", "House in Water", "Assistant designer · dir. Po-Shen Lu"],
+    ],
+  },
+];
+
+/* ---------- Practice / training page -------------------------------------- */
+window.PRACTICE = {
+  // DRAFT
+  intro: [
+    "Training is where the practice is most visible: a daily ritual of attention in which intensity becomes precision — melting into structure.",
+    "My teaching is rooted in the method of Theodoros Terzopoulos, which I trained in and now assist at Attis Theatre in Athens: a psychophysical practice working from breath, the pelvis and the voice towards a body of full presence. It is enriched by somatic and improvisation practices — Skinner Releasing, instant composition, contact improvisation — and by theatre anthropology.",
+  ],
+  // DRAFT — the workshops you offer. Edit, add or remove.
+  offers: [
+    {
+      title: "Psychophysical training",
+      who: "Actors, dancers, performers",
+      text: "Based on the Terzopoulos method: breath, rhythm, vocal energy and the body under pressure. Builds stamina, presence and a body that can carry text and tragedy.",
+    },
+    {
+      title: "Body, space & object",
+      who: "Scenographers, directors, performers",
+      text: "Space awareness, performer–object relationships and dramaturgy — developed through my teaching in the Department of Scenography at DAMU.",
+    },
+    {
+      title: "Movement & physical storytelling",
+      who: "Young people, mixed and community groups",
+      text: "Movement, storytelling and site-specific research, as in the Symbiosis project in Romania with 60 young participants.",
+    },
+  ],
+  formats: "One-day sessions to two-week intensives · in English or Mandarin",
+};
+
+/* ---------- CV ------------------------------------------------------------ */
+window.CV = {
+  awards: [
+    ["2025", "Award, AMU Interfaculty Competition — Nine Songs: Rituals of Longing"],
+    ["2025", "Award, DAMU Internal Competition — Terrorizers"],
+    ["2022", "Short-term Study/Research Scholarship for Higher Education Institutions in the Czech Republic (10 months)"],
+  ],
+  festivals: [
+    ["2025", "Pan Festival, Slovakia — Čí je to dort? (Who Burned the Cake?)"],
+    ["2025", "Trutnov CirkUFF Festival — Through"],
+    ["2023", "Trutnov CirkUFF Festival — Teď už není (Now That I’m Not)"],
+    ["2023", "Malta Dance Festival — Urban Symphony"],
+    ["2022", "Edinburgh Taiwan Arts Festival — screening of Kill the Banana Trees"],
+  ],
+  directing: [
+    ["2025", "Nine Songs: Rituals of Longing", "Theatre & film · director and lead performer · DAMU"],
+    ["2025", "Terrorizers", "Theatre · director and actor · DAMU"],
+    ["2022", "Kill the Banana Trees", "Short film · writer and director"],
+    ["2022", "WOYZECK", "Animation · writer and director"],
+    ["2021", "Remember I Wish She Only Withered in Dream", "Theatre · playwright and director"],
+  ],
+  performing: [
+    ["2025", "Nine Songs: Rituals of Longing", "Lead performer (film & theatre) · DAMU"],
+    ["2025", "ION", "Author and performer"],
+    ["2025", "Terrorizers", "Actor · DAMU"],
+    ["2025", "Tři kumpáni (Three Buddies)", "Musician (erhu) & performer · Alfredu ve dvoře · dir. Alžběta Trojanová"],
+    ["2025", "Čí je to dort? (Who Burned the Cake?)", "Physical performer · Pan Festival, Slovakia · dir. Hana Strejčková"],
+    ["2025", "Through", "Physical performer / dancer · Trutnov CirkUFF Festival · dir. Roman Horák"],
+    ["2025", "House of Democracy", "Film, lead actor · FAMU International · dir. Chih Yu Lin"],
+    ["2024", "Playground", "Physical performer"],
+    ["2024", "Julyen Hamilton, PIO & Dancers", "Ensemble improviser / dancer · Studio Hrdinů, Prague · chor. Julyen Hamilton & CrewCollective"],
+    ["2024", "For Now, Until Then, Forever", "Physical performer / ensemble · Continuo Theatre · dir. Pavel Štourač"],
+    ["2024", "Po Pás 2024 (Christmas Edition)", "Ensemble improviser / dancer · Komunitní centrum Žižkostel · CrewCollective"],
+    ["2024", "Mind Move", "Ensemble improviser / dancer · dir. Veronika Knytlová & Mish Rais"],
+    ["2024", "Symphony of Schmatz", "Film actor · dir. Allegra Stodolsky"],
+    ["2023", "Prima", "Dancer / performer · international touring production · dir. Viktor Černický"],
+    ["2023", "Urban Symphony", "Dancer / site-specific performer · Malta Dance Festival · dir. Julienne Schembri & Maya Felixbrodt"],
+    ["2023", "Teď už není (Now That I’m Not)", "Physical performer · Trutnov CirkUFF Festival · dir. Roman Horák"],
+    ["2023", "Zase (Again)", "Dancer · dir. Kate Rosova"],
+    ["2023", "Chátra (Outsider)", "Dancer / site-specific performer · dir. Jaroslav Smejkal"],
+    ["2022", "The Nose", "Actor · dir. Hao-Chen Hu"],
+    ["2022", "The Chair", "Actor · dir. Wei-Chi Tu"],
+    ["2022", "Same Time, Next Year", "Actor · dir. Kun-Jun Yao"],
+    ["2020", "The Death of Danton", "Actor · dir. Si-Da Chiang"],
+  ],
+  pedagogy: [
+    ["2026", "Attis Theatre, Athens", "Trained instructor & assistant to Savvas Stroumpos — psychophysical and vocal principles of the Theodoros Terzopoulos training"],
+    ["2025–", "DAMU, Prague", "Assistant pedagogue, Department of Scenography — space, performer–object integration and dramaturgy. Also working with the Department of Authorial Acting."],
+    ["2025", "Attis Theatre, Athens", "Trained instructor & assistant to Savvas Stroumpos"],
+    ["2024", "Symbiosis Project, Romania", "Lead workshop facilitator — movement, physical storytelling and site-specific research for 60 young participants"],
+  ],
+  education: [
+    ["2023–2025", "MA Authorial Acting", "Academy of Performing Arts in Prague (DAMU)"],
+    ["2022–2023", "Authorial Acting, short-term study", "Academy of Performing Arts in Prague (DAMU)"],
+    ["2017–2022", "BA Drama & Theatre / Chinese Literature (double degree)", "National Taiwan University · specialisation in playwriting and theatre history"],
+  ],
+  workshops: [
+    ["2025", "Julyen Hamilton", "Instant composition · 5 days, Prague"],
+    ["2025", "Farm in the Cave", "Immersive physical performance intensive · 5 days, Prague"],
+    ["2024", "Julyen Hamilton", "Working with objects & instant composition · 5 days, Prague"],
+    ["2024", "Eugenio Barba & Julia Varley", "Masterclass on imagination and improvisation · Athens"],
+    ["2024", "Lali Ayguadé", "From Gravity to Lightness · 5 days, Prague"],
+    ["2023–24", "Attis Theatre", "Psychosomatic training, Theodoros Terzopoulos method · 2 months, Athens"],
+    ["2024", "Bettina Neuhaus", "Skinner Releasing Technique · 4 days, Prague"],
+    ["2023", "Farm in the Cave", "Immersive physical performance intensive · 5 days, Prague"],
+    ["2023", "Jana Pilátová", "Theatre anthropology — body/voice dynamics · 4 days"],
+    ["2023", "Danny Lepkoff", "Movement improvisation & physicality · 4 days, Prague"],
+    ["2022", "Eva Karczag", "Somatics and dance improvisation · 4 days, Prague"],
+  ],
+  skills: {
+    Languages: "Mandarin (native) · English (fluent) · Czech, French, Greek (beginner)",
+    Instruments: "Erhu (Chinese two-stringed bowed instrument) · clarinet · piano",
+    Voice: "Baritone",
+    Movement: "Theodoros Terzopoulos method · contemporary dance · contact improvisation · floorwork · somatic practices · physical theatre",
+  },
+};

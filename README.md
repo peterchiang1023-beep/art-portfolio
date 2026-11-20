@@ -1,41 +1,52 @@
-# Art Portfolio
+# Chiang Cheng-Te — portfolio
 
-A simple, fast portfolio site for showing artwork. It's plain HTML, CSS and JavaScript with no build step, and it's ready to host for free on GitHub Pages.
+*Melting into structure.* Portfolio site for a performer, director, designer and trainer working between Prague and Taipei.
 
-## Adding your work
+It's plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
 
-1. Put your image files in `images/`. JPG or WebP files under about 2,000px on the long edge load quickly.
-2. Open `works.js` and add an entry for each piece:
+## Pages
 
+| Page | File |
+|---|---|
+| Home: statement, Nine Songs, selected works, four ways in | `index.html` |
+| Works, filterable by Directing / Performing / Film / Design | `works.html` |
+| One page per work, e.g. `work.html?id=nine-songs` | `work.html` |
+| Practice & training: workshops, teaching, lineage | `practice.html` |
+| About: bio, skills, full CV | `about.html` |
+
+## Editing content
+
+**All the text lives in [`data.js`](data.js).** You don't need to touch the HTML.
+
+- `SITE`: name, statement, bio, email, showreel
+- `WORKS`: projects. Each has roles, disciplines, a YouTube `video` ID, and a description.
+  Nine Songs also has `directorNote`, `process`, `gallery` and `credits`. Sections left empty are hidden.
+- `PRACTICE`: workshops you offer
+- `CV`: awards, festivals, credits, teaching, education, workshops, skills
+
+Text marked **DRAFT** is a starting point to rewrite in your own words.
+
+### Adding photos
+
+1. Put them in a folder per project, e.g. `images/nine-songs/01.jpg`. JPGs around 2000px wide work well.
+2. List them in that project's `gallery` in `data.js`:
    ```js
-   { title: "Night Garden", year: 2025, medium: "Mixed media", size: "80 × 110 cm", category: "Mixed media", image: "images/night-garden.jpg" },
+   gallery: ["images/nine-songs/01.jpg", "images/nine-songs/02.jpg"],
    ```
-
-3. Edit the `SITE` block at the top of `works.js` with your name, bio, email and links.
-4. Delete the `images/placeholder-*.svg` files once your own work is in.
-
-The filter buttons are generated from each work's `category`.
+   The first photo also becomes the project's card image, replacing the video still.
 
 ## Preview locally
-
-Open `index.html` in a browser, or run:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then go to http://localhost:8000.
+Then open http://localhost:8000.
 
 ## Publishing
-
-Run:
 
 ```bash
 ./deploy.sh
 ```
 
-It asks for a GitHub token (hidden as you type), creates the `art-portfolio` repository on your account if needed, pushes the site and turns on GitHub Pages. The token is used for that run only. It isn't saved anywhere, so you don't need `gh auth login`.
-
-Use a classic token with the `repo` scope, or a fine-grained token with **Administration**, **Contents** and **Pages** set to read and write.
-
-Run it again whenever you add work. It offers to commit your changes, then pushes them.
+It asks for a GitHub token (hidden as you type), commits your changes, pushes them and updates GitHub Pages. The token isn't saved anywhere. Use a classic token with the `repo` scope.

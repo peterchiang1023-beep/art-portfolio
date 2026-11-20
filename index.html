@@ -3,59 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio</title>
-  <meta name="description" content="Artistic portfolio">
+  <title>Chiang Cheng-Te — Melting into structure</title>
+  <meta name="description" content="Chiang Cheng-Te — Taiwanese performer, director, designer and trainer in theatre and film, working between Prague and Taipei.">
+  <meta property="og:title" content="Chiang Cheng-Te — Melting into structure">
+  <meta property="og:description" content="Chiang Cheng-Te — Taiwanese performer, director, designer and trainer in theatre and film, working between Prague and Taipei.">
+  <meta property="og:image" content="images/portrait.jpg">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="#top" id="brand"></a>
-    <nav>
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
-
-  <main id="top">
-    <section class="intro">
-      <h1 id="name"></h1>
-      <p id="tagline"></p>
-    </section>
-
-    <section id="work">
-      <div class="filters" id="filters" role="tablist" aria-label="Filter works"></div>
-      <div class="gallery" id="gallery"></div>
-    </section>
-
-    <section id="about" class="about">
-      <h2>About</h2>
-      <p id="about-text"></p>
-    </section>
-
-    <section id="contact" class="contact">
-      <h2>Contact</h2>
-      <p><a id="email"></a></p>
-      <ul id="links"></ul>
-    </section>
-  </main>
-
-  <footer class="site-footer"><span id="copyright"></span></footer>
-
-  <dialog id="lightbox" aria-label="Artwork viewer">
-    <button class="lb-close" aria-label="Close">×</button>
-    <button class="lb-prev" aria-label="Previous">‹</button>
-    <figure>
-      <img alt="">
-      <figcaption></figcaption>
-    </figure>
-    <button class="lb-next" aria-label="Next">›</button>
-  </dialog>
-
-  <script src="works.js"></script>
-  <script src="script.js"></script>
+<body data-page="home">
+  <main></main>
+  <noscript><p style="padding:120px 24px">This site needs JavaScript to show its content.</p></noscript>
+  <script src="data.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>
