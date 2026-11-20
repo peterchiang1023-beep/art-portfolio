@@ -390,7 +390,10 @@ body.spot .card.is-lit { color: var(--paper); }
 
 /* ---------- the hidden wave (wave.js) ---------- */
 .w { display: inline-block; white-space: nowrap; }
-.ch { display: inline-block; transform-origin: 50% 70%; }
+.ch { display: inline-block; transform-origin: 50% 55%; }
+.wd { display: inline-block; transform-origin: 50% 55%; }
+/* gallery photos: duotone without blur, full colour on hover */
+.gallery .duo img { filter: grayscale(1) contrast(1.1); }
 .wave-rules {
   position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: visible;
 }

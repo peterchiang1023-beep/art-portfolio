@@ -2,8 +2,9 @@
    The hidden wave.
    An invisible swell follows the pointer — slowly, with its own breathing rhythm.
    You never see it, only what it moves:
-     - display type lifts and sways letter by letter
-     - reading text drifts by a pixel or two, whole lines only, so it stays legible
+     - display type swells and stretches letter by letter, in place
+     - reading text breathes word by word (a few percent), in place, so it stays legible
+     Nothing is moved or rotated; everything deforms where it stands.
      - the vertical column rules bend around it
      - the Delphic E field warps like water
    Images and videos are never touched.
@@ -51,6 +52,30 @@
     el.prepend(sr);
   }
   document.querySelectorAll(DISPLAY).forEach(split);
+
+  // Reading text is split into words (not letters), so it stays easy to read.
+  // The text itself stays in the DOM, so screen readers and copy/paste are unaffected.
+  function splitWords(el) {
+    if (el.dataset.split || el.closest(PROTECTED) || el.closest("[data-split]") || el.querySelector("[data-split]")) return;
+    el.dataset.split = "w";
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const n of nodes) {
+      if (!n.textContent.trim()) continue;
+      const frag = document.createDocumentFragment();
+      for (const part of n.textContent.split(/(\s+)/)) {
+        if (!part) continue;
+        if (/^\s+$/.test(part)) { frag.append(document.createTextNode(part)); continue; }
+        const w = document.createElement("span");
+        w.className = "wd";
+        w.textContent = part;
+        frag.append(w);
+      }
+      n.replaceWith(frag);
+    }
+  }
+  document.querySelectorAll(READING).forEach(splitWords);
 
   // ---------- 2. the bending column rules ----------
   const NS = "http://www.w3.org/2000/svg";
@@ -104,18 +129,18 @@
     for (const it of items) it.el.style.transform = "";
     items = [];
     const sx = scrollX, sy = scrollY;
+    // display letters (kind 1) and reading words (kind 0); each gets a small random
+    // phase offset so neighbours never pulse in perfect lockstep
     document.querySelectorAll(".ch").forEach((el) => {
       const r = el.getBoundingClientRect();
       if (!r.width) return;
-      // bigger letters can move more; small ones barely
-      const a = Math.max(0.25, Math.min(1, r.height / 110));
-      items.push({ el, x: r.left + sx + r.width / 2, y: r.top + sy + r.height / 2, a, kind: 1, on: false });
+      const a = Math.max(0.35, Math.min(1, r.height / 110)); // big letters swell more
+      items.push({ el, x: r.left + sx + r.width / 2, y: r.top + sy + r.height / 2, a, j: Math.random() * 0.7, kind: 1, on: false });
     });
-    document.querySelectorAll(READING).forEach((el) => {
-      if (el.closest(PROTECTED) || el.closest("[data-split]") || el.querySelector("[data-split]")) return;
+    document.querySelectorAll(".wd").forEach((el) => {
       const r = el.getBoundingClientRect();
       if (!r.width) return;
-      items.push({ el, x: r.left + sx + r.width / 2, y: r.top + sy + r.height / 2, a: 1, kind: 0, on: false });
+      items.push({ el, x: r.left + sx + r.width / 2, y: r.top + sy + r.height / 2, a: 1, j: Math.random() * 0.7, kind: 0, on: false });
     });
     // column rules: same x positions as the CSS rules
     ruleXs = [];
@@ -225,20 +250,21 @@
       }
       const dist = Math.sqrt(d2) || 1;
       const g = Math.exp(-d2 / (R * R));
-      const s = Math.sin(dist / LAMBDA - phase * 2.1);
-      const off = A * g * s;
+      // Nothing moves or turns: each letter / word stays where it is and only
+      // swells, stretches or squeezes in place. Height and width are slightly out
+      // of step (the second sine lags), which makes the deformation feel liquid.
+      const p = dist / LAMBDA - phase * 2.1 + it.j;
+      const sy = A * g * Math.sin(p);
+      const sx = A * g * Math.sin(p - 0.9);
+      let kx, ky;
       if (it.kind === 1) {
-        // display letters: lift, sway outward, tilt
-        const ty = off * 16 * it.a;
-        const tx = (dx / dist) * off * 6 * it.a;
-        const rot = off * 4 * it.a;
-        it.el.style.transform = `translate3d(${tx.toFixed(2)}px,${ty.toFixed(2)}px,0) rotate(${rot.toFixed(2)}deg)`;
+        kx = 1 + sx * 0.16 * it.a;   // display letters: up to ~±20% taller, ~±16% wider
+        ky = 1 + sy * 0.22 * it.a;
       } else {
-        // reading lines: a gentle drift only, never deformed
-        const ty = off * 2.2;
-        const tx = (dx / dist) * off * 1.2;
-        it.el.style.transform = `translate3d(${tx.toFixed(2)}px,${ty.toFixed(2)}px,0)`;
+        kx = 1 + sx * 0.035;         // reading words: ±4–5%, enough to feel, easy to read
+        ky = 1 + sy * 0.05;
       }
+      it.el.style.transform = `scale(${kx.toFixed(4)},${ky.toFixed(4)})`;
       it.on = true;
     }
 

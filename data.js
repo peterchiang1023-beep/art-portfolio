@@ -65,6 +65,7 @@ window.WORKS = [
   },
   {
     id: "terrorizers",
+    gallery: ["images/terrorizers/01.jpg", "images/terrorizers/02.jpg"],
     title: "Terrorizers",
     year: 2025,
     roles: ["Director", "Actor"],
@@ -81,6 +82,7 @@ window.WORKS = [
   },
   {
     id: "ion",
+    gallery: ["images/ion/01.jpg", "images/ion/02.jpg"],
     title: "ION",
     year: 2025,
     roles: ["Author", "Performer"],
@@ -95,6 +97,7 @@ window.WORKS = [
   },
   {
     id: "playground",
+    gallery: ["images/playground/01.jpg", "images/playground/02.jpg"],
     title: "Playground",
     year: 2024,
     roles: ["Performer"],
@@ -109,6 +112,7 @@ window.WORKS = [
   },
   {
     id: "through",
+    gallery: ["images/through/01.jpg", "images/through/02.jpg", "images/through/03.jpg"],
     title: "Through",
     year: 2025,
     roles: ["Physical performer", "Dancer"],
@@ -146,6 +150,7 @@ window.WORKS = [
   },
   {
     id: "for-now-until-then-forever",
+    gallery: ["images/for-now-until-then-forever/01.jpg", "images/for-now-until-then-forever/02.jpg"],
     title: "For Now, Until Then, Forever",
     originalTitle: "Zatím, do té doby, navždy",
     year: 2024,
