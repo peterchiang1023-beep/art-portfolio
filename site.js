@@ -11,10 +11,15 @@
   const bigThumb = (id) => `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
   const workUrl = (w) => `work.html?id=${encodeURIComponent(w.id)}`;
   const byYear = (a, b) => String(b.year).localeCompare(String(a.year));
+  const pad = (n) => String(n).padStart(2, "0");
+  // "Melting (in/to) structure" -> MELTING <em>(in/to)</em> STRUCTURE
+  const motto = (m = SITE.motto) => esc(m).replace(/\((.*?)\)/, '<em class="soft">($1)</em>');
+  // Background frieze of ruined Delphic E's (the ritual motif).
+  const frieze = (cls = "") => `<div class="frieze ${cls}" aria-hidden="true"><div class="frieze-band"></div></div>`;
 
-  // Click-to-play YouTube (loads nothing from YouTube until clicked).
-  const videoBlock = (id, label = "Play video") => `
-    <div class="video" data-yt="${esc(id)}">
+  // Click-to-play YouTube (nothing loads from YouTube until clicked).
+  const videoBlock = (id, label = "Play") => `
+    <div class="video duo" data-yt="${esc(id)}">
       <img src="${bigThumb(id)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${thumb(id)}'">
       <button class="play" aria-label="${esc(label)}"><span class="play-icon"></span><span class="play-label">${esc(label)}</span></button>
     </div>`;
@@ -22,56 +27,101 @@
     const btn = e.target.closest(".video .play");
     if (!btn) return;
     const box = btn.closest(".video");
+    box.classList.remove("duo");
     box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
   });
 
-  // Cover image for a card: video still if there is one, otherwise a typographic poster.
+  // Card cover: photo or video still in duotone; otherwise a black typographic block.
   const cover = (w) => {
     const img = (w.gallery && w.gallery[0]) || (w.video && thumb(w.video));
-    if (img) return `<div class="cover"><img src="${esc(img)}" alt="" loading="lazy"></div>`;
-    return `<div class="cover poster" data-tone="${(w.title.length % 3) + 1}"><span>${esc(w.title)}</span></div>`;
+    if (img) return `<div class="cover duo"><img src="${esc(img)}" alt="" loading="lazy"></div>`;
+    return `<div class="cover poster"><span>${esc(w.title)}</span></div>`;
   };
   const card = (w) => `
     <a class="card" href="${workUrl(w)}" data-disc="${esc((w.disciplines || []).join(" "))}">
       ${cover(w)}
       <div class="card-meta">
-        <h3>${esc(w.title)}</h3>
-        <p class="roles">${esc(w.roles.join(" · "))} <span>${esc(w.year)}</span></p>
-        ${w.award && w.award.startsWith("Award") ? `<p class="badge">Award 2025</p>` : ""}
+        <div><h3>${esc(w.title)}</h3><p>${esc(w.roles.join(" + "))}</p></div>
+        <div class="right"><p>${esc((w.disciplines || [])[0] || "")}</p><p>${esc(w.year)}</p></div>
       </div>
+      ${w.award && w.award.startsWith("Award") ? `<p class="flag">Award</p>` : ""}
     </a>`;
+  const row = (label, body, { count, id, cls = "" } = {}) => `
+    <section class="row wrap ${cls}"${id ? ` id="${id}"` : ""}>
+      <div class="row-label"><h2 class="label">${label}</h2>${count != null ? `<span class="label count">(${pad(count)})</span>` : ""}</div>
+      <div class="row-body">${body}</div>
+    </section>`;
+  const cvRows = (rows) =>
+    `<ul class="cv-list">${rows
+      .map(([y, a, b]) => `<li><span class="y">${esc(y)}</span><span>${b ? `<strong>${esc(a)}</strong><em>${esc(b)}</em>` : esc(a)}</span></li>`)
+      .join("")}</ul>`;
 
-  // ---------- shell: header + footer ----------
-  const nav = [
-    ["index.html", "Home", "home"],
+  // ---------- shell: rules, header, menu, footer ----------
+  const navItems = [
     ["works.html", "Works", "works"],
+    [workUrl(WORKS.find((w) => w.featured) || WORKS[0]), "Nine Songs", "nine"],
     ["practice.html", "Practice", "practice"],
     ["about.html", "About", "about"],
+    ["#contact", "Contact", "contact"],
   ];
   document.body.insertAdjacentHTML(
     "afterbegin",
-    `<header class="site-header">
-      <a class="brand" href="index.html">${esc(SITE.name)}</a>
-      <nav>${nav
-        .filter(([, , key]) => key !== "home")
+    `<div class="rules wrap" aria-hidden="true"><span></span><span></span><span></span></div>
+    <header class="site-header wrap">
+      <a class="brand" href="index.html"><span class="e-mark" aria-hidden="true"></span><span>${esc(SITE.name)}</span></a>
+      <nav class="quick">${navItems
+        .slice(0, 4)
         .map(([href, label, key]) => `<a href="${href}"${key === page || (page === "work" && key === "works") ? ' aria-current="page"' : ""}>${label}</a>`)
-        .join("")}<a href="#contact">Contact</a></nav>
-    </header>`
+        .join("")}</nav>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu"><span class="plus" aria-hidden="true"></span><span class="sr">Menu</span></button>
+    </header>
+    <div class="menu" id="menu" hidden>
+      <div class="menu-inner wrap">
+        <nav class="menu-big">${navItems.map(([href, label]) => `<a href="${href}">${label}</a>`).join("")}</nav>
+        <div class="menu-side">
+          <p class="label">Works</p>
+          <ul>${WORKS.slice(0, 10).map((w) => `<li><a href="${workUrl(w)}"><strong>${esc(w.title)}</strong> ${esc(w.year)}</a></li>`).join("")}</ul>
+          <p class="label">${esc(SITE.email)}</p>
+        </div>
+      </div>
+    </div>`
   );
   document.body.insertAdjacentHTML(
     "beforeend",
     `<footer class="site-footer" id="contact">
-      <div class="footer-inner">
-        <p class="footer-motto">${esc(SITE.motto)}.</p>
+      ${frieze("on-dark")}
+      <div class="wrap">
+        <p class="footer-motto">${motto()}</p>
         <div class="footer-cols">
-          <div><h4>Contact</h4><p><a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a></p></div>
-          <div><h4>Based in</h4><p>${esc(SITE.places)}</p></div>
-          <div><h4>Showreel</h4><p><a href="https://youtu.be/${esc(SITE.showreel)}" target="_blank" rel="noopener">Movement showreel ↗</a></p></div>
+          <div><p class="label">Contact</p><p><a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a></p></div>
+          <div><p class="label">Based in</p><p>${esc(SITE.places)}</p></div>
+          <div><p class="label">Showreel</p><p><a href="https://youtu.be/${esc(SITE.showreel)}" target="_blank" rel="noopener">Movement showreel ↗</a></p></div>
         </div>
-        <p class="copyright">© ${new Date().getFullYear()} ${esc(SITE.name)}</p>
+        <p class="label copyright">© ${new Date().getFullYear()} ${esc(SITE.name)}</p>
       </div>
     </footer>`
   );
+
+  const menu = $("#menu");
+  const menuBtn = $(".menu-btn");
+  const setMenu = (open) => {
+    menu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", open);
+    document.body.classList.toggle("menu-open", open);
+  };
+  menuBtn.addEventListener("click", () => setMenu(menu.hidden));
+  menu.addEventListener("click", (e) => e.target.closest("a") && setMenu(false));
+  document.addEventListener("keydown", (e) => e.key === "Escape" && setMenu(false));
+
+  // Spotlight: hovering a work turns the page black and brings that image to full colour.
+  if (matchMedia("(hover: hover)").matches) {
+    document.addEventListener("mouseover", (e) => {
+      const c = e.target.closest(".card, .video.duo");
+      document.querySelectorAll(".is-lit").forEach((el) => el !== c && el.classList.remove("is-lit"));
+      if (c) c.classList.add("is-lit");
+      document.body.classList.toggle("spot", !!c);
+    });
+  }
 
   const main = $("main");
 
@@ -82,47 +132,45 @@
       const selected = ["terrorizers", "ion", "playground", "through", "house-of-democracy", "kill-the-banana-trees"]
         .map((id) => WORKS.find((w) => w.id === id))
         .filter(Boolean);
+      const [first, ...rest] = SITE.name.split(" ");
       main.innerHTML = `
-        <section class="hero">
-          <div class="hero-field" aria-hidden="true"><div class="melt"></div></div>
-          <div class="hero-text">
-            <p class="eyebrow">${esc(SITE.places)}</p>
-            <h1>${esc(SITE.name).replace(/(\S+-\S+)/, '<span class="nw">$1</span>')}</h1>
-            <p class="motto">${esc(SITE.motto)}</p>
-            <p class="hero-roles">${esc(SITE.roles)}</p>
+        <section class="hero wrap">
+          ${frieze("hero-frieze")}
+          <div class="hero-top">
+            <div><p class="label">${esc(SITE.places)}</p><p class="label thin">Theatre &amp; film</p></div>
+            <div><p class="label thin">${esc(SITE.roles).replace(/ · /g, "<br>")}</p></div>
+            <div><ul class="label hero-links">
+              <li><a href="works.html?d=Directing">Directing</a></li>
+              <li><a href="works.html?d=Performing">Performing</a></li>
+              <li><a href="works.html?d=Film">Film</a></li>
+              <li><a href="works.html?d=Design">Design</a></li>
+              <li><a href="practice.html">Training</a></li>
+            </ul></div>
           </div>
-          <a class="scroll-cue" href="#statement" aria-label="Scroll down">↓</a>
+          <div class="hero-bottom">
+            <p class="hero-motto">${motto()}</p>
+            <h1 class="giant"><span>${esc(first)}</span><span class="nw">${esc(rest.join(" "))}</span></h1>
+          </div>
         </section>
 
-        <section class="statement wrap" id="statement">
-          ${SITE.statement.map((p, i) => `<p class="${i === 0 ? "lead" : ""}">${esc(p)}</p>`).join("")}
-        </section>
+        ${row("Statement", `<div class="statement">${SITE.statement.map((p, i) => `<p class="${i === 0 ? "lead" : ""}">${esc(p)}</p>`).join("")}</div>`)}
 
-        ${featured ? `
-        <section class="featured wrap">
-          <div class="section-head"><p class="eyebrow">Featured work</p>${featured.award ? `<p class="badge">${esc(featured.award)}</p>` : ""}</div>
+        ${featured ? row("Featured", `
           ${videoBlock(featured.video, featured.videoLabel ? `Watch the ${featured.videoLabel.toLowerCase()}` : "Watch")}
-          <div class="featured-text">
-            <h2><a href="${workUrl(featured)}">${esc(featured.title)}</a></h2>
-            <p>${esc(featured.summary)}</p>
-            <a class="more" href="${workUrl(featured)}">Director’s page, process & credits →</a>
-          </div>
-        </section>` : ""}
+          <div class="card-meta big">
+            <div><h3><a href="${workUrl(featured)}">${esc(featured.title)}</a></h3><p>${esc(featured.roles.join(" + "))}</p></div>
+            <div class="right"><p>${esc(featured.award || "")}</p><p><a href="${workUrl(featured)}">Director’s page →</a></p></div>
+          </div>`) : ""}
 
-        <section class="wrap">
-          <div class="section-head"><p class="eyebrow">Selected works</p><a class="more" href="works.html">All works →</a></div>
-          <div class="grid">${selected.map(card).join("")}</div>
-        </section>
+        ${row("Selected works", `<div class="cards">${selected.map(card).join("")}</div><p class="after"><a class="label" href="works.html">All works →</a></p>`, { count: selected.length })}
 
-        <section class="ways wrap">
-          <p class="eyebrow">One practice, four ways in</p>
-          <div class="ways-grid">
+        ${row("One practice,<br>four ways in", `
+          <div class="ways">
             <a href="works.html?d=Directing"><span>Directing</span><small>Authorial productions for stage and film</small></a>
-            <a href="works.html?d=Performing"><span>Performing</span><small>Physical theatre, dance, film and live music</small></a>
+            <a href="works.html?d=Performing"><span>Performing</span><small>Physical theatre, dance, film, live music</small></a>
             <a href="works.html?d=Design"><span>Design</span><small>Video and scenography for theatre</small></a>
             <a href="practice.html"><span>Training</span><small>Terzopoulos method & body-mind practice</small></a>
-          </div>
-        </section>`;
+          </div>`)}`;
     },
 
     works() {
@@ -130,16 +178,18 @@
       let active = new URLSearchParams(location.search).get("d");
       if (!discs.includes(active)) active = "All";
       const list = [...WORKS].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || byYear(a, b));
+      const n = (d) => (d === "All" ? WORKS.length : WORKS.filter((w) => w.disciplines.includes(d)).length);
       main.innerHTML = `
-        <section class="page-head wrap">
-          <h1>Works</h1>
-          <p>Each work appears once, with the roles I held in it.</p>
-          <div class="filters" role="group" aria-label="Filter works">
-            ${discs.map((d) => `<button data-d="${d}">${d}</button>`).join("")}
-            <a href="practice.html" class="filter-link">Training →</a>
-          </div>
+        <section class="page-head wrap">${frieze()}
+          <h1 class="giant">Works</h1>
         </section>
-        <section class="wrap"><div class="grid" id="grid">${list.map(card).join("")}</div></section>`;
+        ${row(
+          `<span class="filters" role="group" aria-label="Filter works">${discs
+            .map((d) => `<button data-d="${d}">${d} <span>(${pad(n(d))})</span></button>`)
+            .join("")}<a href="practice.html">Training →</a></span>`,
+          `<div class="cards" id="grid">${list.map(card).join("")}</div>`,
+          { cls: "works-row" }
+        )}`;
       const apply = () => {
         main.querySelectorAll(".filters button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.d === active));
         main.querySelectorAll("#grid .card").forEach((c) => {
@@ -150,8 +200,9 @@
         history.replaceState(null, "", url);
       };
       main.querySelector(".filters").addEventListener("click", (e) => {
-        if (!e.target.dataset.d) return;
-        active = e.target.dataset.d;
+        const b = e.target.closest("button");
+        if (!b) return;
+        active = b.dataset.d;
         apply();
       });
       apply();
@@ -162,7 +213,7 @@
       const i = WORKS.findIndex((w) => w.id === id);
       const w = WORKS[i];
       if (!w) {
-        main.innerHTML = `<section class="page-head wrap"><h1>Not found</h1><p><a href="works.html">See all works →</a></p></section>`;
+        main.innerHTML = `<section class="page-head wrap">${frieze()}<h1 class="giant">Not found</h1><p><a class="label" href="works.html">All works →</a></p></section>`;
         return;
       }
       document.title = `${w.title} — ${SITE.name}`;
@@ -173,87 +224,72 @@
         ["Director", w.director],
         ["Venue", w.venue],
         ["Original title", w.originalTitle],
+        ["Recognition", w.award],
       ].filter(([, v]) => v);
       const prev = WORKS[(i - 1 + WORKS.length) % WORKS.length];
       const next = WORKS[(i + 1) % WORKS.length];
-      const section = (title, html) => (html ? `<section class="work-section"><h2>${title}</h2>${html}</section>` : "");
+      const sub = (title, html) => (html ? row(title, html) : "");
       main.innerHTML = `
-        <article class="work wrap ${w.featured ? "is-featured" : ""}">
-          <header class="work-head">
-            <p class="eyebrow"><a href="works.html">Works</a> / ${esc((w.disciplines || []).join(" · "))}</p>
-            <h1>${esc(w.title)}</h1>
-            ${w.award ? `<p class="badge">${esc(w.award)}</p>` : ""}
-          </header>
-          ${w.video ? videoBlock(w.video, w.videoLabel ? `Watch the ${w.videoLabel.toLowerCase()}` : "Watch") : ""}
-          <div class="work-body">
-            <dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
-            <div class="work-text">
-              ${w.summary && !w.description ? `<p class="lead">${esc(w.summary)}</p>` : ""}
-              ${paras(w.description)}
-              ${section("The source", w.source ? `<p>${esc(w.source)}</p>` : "")}
-              ${section("Director’s note", paras(w.directorNote))}
-              ${section("Process", paras(w.process))}
-              ${section("Productions", w.list ? `<ul class="cv-list">${w.list.map(([y, t, d]) => `<li><span class="y">${esc(y)}</span><span><strong>${esc(t)}</strong> <em>${esc(d)}</em></span></li>`).join("")}</ul>` : "")}
-              ${section("Credits", w.credits?.length ? `<dl class="credits">${w.credits.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "")}
-            </div>
-          </div>
-          ${w.gallery?.length ? `<div class="gallery">${w.gallery.map((src) => `<img src="${esc(src)}" alt="${esc(w.title)}" loading="lazy">`).join("")}</div>` : ""}
-          <nav class="prev-next">
-            <a href="${workUrl(prev)}"><small>Previous</small>${esc(prev.title)}</a>
-            <a href="${workUrl(next)}"><small>Next</small>${esc(next.title)}</a>
-          </nav>
-        </article>`;
+        <section class="page-head wrap">${frieze()}
+          <p class="label"><a href="works.html">Works</a> / ${esc((w.disciplines || []).join(" + "))}</p>
+          <h1 class="title">${esc(w.title)}</h1>
+        </section>
+        ${w.video ? `<section class="wrap">${videoBlock(w.video, w.videoLabel ? `Watch the ${w.videoLabel.toLowerCase()}` : "Watch")}</section>` : ""}
+        ${row(
+          `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`,
+          `<div class="prose">${w.description ? paras(w.description) : `<p>${esc(w.summary)}</p>`}</div>`,
+          { cls: "work-main" }
+        )}
+        ${sub("The source", w.source ? `<div class="prose"><p>${esc(w.source)}</p></div>` : "")}
+        ${sub("Director’s note", w.directorNote?.length ? `<div class="prose">${paras(w.directorNote)}</div>` : "")}
+        ${sub("Process", w.process?.length ? `<div class="prose">${paras(w.process)}</div>` : "")}
+        ${sub("Productions", w.list ? cvRows(w.list.map(([y, t, d]) => [y, t, d])) : "")}
+        ${sub("Credits", w.credits?.length ? `<dl class="facts two">${w.credits.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "")}
+        ${w.gallery?.length ? `<section class="wrap gallery">${w.gallery.map((src) => `<div class="duo"><img src="${esc(src)}" alt="${esc(w.title)}" loading="lazy"></div>`).join("")}</section>` : ""}
+        <nav class="prev-next wrap">
+          <a href="${workUrl(prev)}"><span class="label">← Previous</span><strong>${esc(prev.title)}</strong></a>
+          <a href="${workUrl(next)}"><span class="label">Next →</span><strong>${esc(next.title)}</strong></a>
+        </nav>`;
     },
 
     practice() {
       main.innerHTML = `
-        <section class="page-head wrap">
-          <p class="eyebrow">Practice & training</p>
-          <h1>The body as a place of transformation</h1>
+        <section class="page-head wrap">${frieze()}
+          <p class="label">Practice & training</p>
+          <h1 class="title">The body as a place of transformation</h1>
         </section>
-        <section class="wrap prose">${PRACTICE.intro.map((p, i) => `<p class="${i === 0 ? "lead" : ""}">${esc(p)}</p>`).join("")}</section>
-        <section class="wrap">
-          <div class="section-head"><p class="eyebrow">Workshops I offer</p></div>
+        ${row("Approach", `<div class="statement">${PRACTICE.intro.map((p, i) => `<p class="${i === 0 ? "lead" : ""}">${esc(p)}</p>`).join("")}</div>`)}
+        ${row("Workshops", `
           <div class="offers">
-            ${PRACTICE.offers.map((o) => `<div class="offer"><h3>${esc(o.title)}</h3><p class="who">${esc(o.who)}</p><p>${esc(o.text)}</p></div>`).join("")}
+            ${PRACTICE.offers.map((o, i) => `<div class="offer"><span class="label">${pad(i + 1)}</span><h3>${esc(o.title)}</h3><p class="label thin">${esc(o.who)}</p><p>${esc(o.text)}</p></div>`).join("")}
           </div>
-          <p class="formats">${esc(PRACTICE.formats)}</p>
-          <p><a class="button" href="mailto:${esc(SITE.email)}?subject=${encodeURIComponent("Workshop enquiry")}">Book a workshop</a></p>
-        </section>
-        <section class="wrap cv-block"><h2>Teaching</h2>${cvRows(CV.pedagogy)}</section>
-        <section class="wrap cv-block"><h2>Training lineage</h2>${cvRows(CV.workshops)}</section>`;
+          <p class="label thin formats">${esc(PRACTICE.formats)}</p>
+          <p><a class="button" href="mailto:${esc(SITE.email)}?subject=${encodeURIComponent("Workshop enquiry")}">Book a workshop →</a></p>`, { count: PRACTICE.offers.length })}
+        ${row("Teaching", cvRows(CV.pedagogy))}
+        ${row("Training lineage", cvRows(CV.workshops))}`;
     },
 
     about() {
       main.innerHTML = `
-        <section class="about-top wrap">
-          <figure class="portrait"><img src="images/portrait.jpg" alt="Portrait of ${esc(SITE.name)}"></figure>
-          <div>
-            <p class="eyebrow">About</p>
-            <h1>${esc(SITE.name)}</h1>
-            <p class="aka">also ${esc(SITE.alsoKnownAs)}</p>
-            <div class="prose">${paras(SITE.bio)}</div>
-            <p><a class="button" href="https://youtu.be/${esc(SITE.showreel)}" target="_blank" rel="noopener">Movement showreel ↗</a></p>
-          </div>
+        <section class="page-head wrap">${frieze()}
+          <p class="label">About</p>
+          <h1 class="giant small"><span>${esc(SITE.name.split(" ")[0])}</span><span class="nw">${esc(SITE.name.split(" ").slice(1).join(" "))}</span></h1>
         </section>
-        <section class="wrap cv-block"><h2>Skills</h2>
-          <dl class="skills">${Object.entries(CV.skills).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
-        </section>
-        <section class="wrap cv-block"><h2>Awards</h2>${cvRows(CV.awards)}</section>
-        <section class="wrap cv-block"><h2>Festivals</h2>${cvRows(CV.festivals)}</section>
-        <section class="wrap cv-block"><h2>Directing</h2>${cvRows(CV.directing)}</section>
-        <section class="wrap cv-block"><h2>Performing</h2>${cvRows(CV.performing)}</section>
-        <section class="wrap cv-block"><h2>Teaching</h2>${cvRows(CV.pedagogy)}</section>
-        <section class="wrap cv-block"><h2>Education</h2>${cvRows(CV.education)}</section>
-        <section class="wrap cv-block"><h2>Workshops attended</h2>${cvRows(CV.workshops)}</section>`;
+        ${row(
+          `<figure class="portrait duo"><img src="images/portrait.jpg" alt="Portrait of ${esc(SITE.name)}"></figure><p class="label thin">also ${esc(SITE.alsoKnownAs)}</p>`,
+          `<div class="prose">${paras(SITE.bio)}</div><p><a class="button" href="https://youtu.be/${esc(SITE.showreel)}" target="_blank" rel="noopener">Movement showreel ↗</a></p>`,
+          { cls: "about-main" }
+        )}
+        ${row("Skills", `<dl class="facts">${Object.entries(CV.skills).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`)}
+        ${row("Awards", cvRows(CV.awards))}
+        ${row("Festivals", cvRows(CV.festivals))}
+        ${row("Directing", cvRows(CV.directing))}
+        ${row("Performing", cvRows(CV.performing))}
+        ${row("Teaching", cvRows(CV.pedagogy))}
+        ${row("Education", cvRows(CV.education))}
+        ${row("Workshops attended", cvRows(CV.workshops))}`;
     },
   };
-
-  function cvRows(rows) {
-    return `<ul class="cv-list">${rows
-      .map(([y, a, b]) => `<li><span class="y">${esc(y)}</span><span>${b ? `<strong>${esc(a)}</strong> <em>${esc(b)}</em>` : esc(a)}</span></li>`)
-      .join("")}</ul>`;
-  }
 
   (pages[page] || pages.home)();
 })();

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
+<defs>
+  <filter id="r0" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="4" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="8" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="4" seed="15" result="p"/>
+    <feColorMatrix in="p" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -14 0 0 0 9.3" result="pm"/>
+    <feComposite in="d" in2="pm" operator="in"/>
+  </filter>
+  <filter id="r1" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="9" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="8" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="4" seed="20" result="p"/>
+    <feColorMatrix in="p" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -14 0 0 0 9.3" result="pm"/>
+    <feComposite in="d" in2="pm" operator="in"/>
+  </filter>
+  <filter id="r2" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="17" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="8" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="4" seed="28" result="p"/>
+    <feColorMatrix in="p" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -14 0 0 0 9.3" result="pm"/>
+    <feComposite in="d" in2="pm" operator="in"/>
+  </filter>
+  <filter id="rl" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="31" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="7" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="4" seed="42" result="p"/>
+    <feColorMatrix in="p" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -14 0 0 0 9.3" result="pm"/>
+    <feComposite in="d" in2="pm" operator="in"/>
+  </filter>
+</defs>
+<g fill="#fff"><g filter="url(#rl)"><rect x="-20" y="10" width="940" height="12"/><rect x="-20" y="378" width="940" height="12"/></g><g filter="url(#r0)"><path transform="rotate(-1.2 150 200) translate(0 0)" d="M78.0,62.0 L126.0,62.0 L126.0,338.0 L78.0,338.0 Z M78.0,60.0 L236.0,60.0 L250.0,44.0 L252.0,110.0 L238.0,102.0 L126.0,102.0 L126.0,60.0 Z M126.0,180.0 L206.0,180.0 L218.0,168.0 L220.0,230.0 L208.0,220.0 L126.0,220.0 Z M78.0,298.0 L126.0,298.0 L126.0,298.0 L240.0,298.0 L254.0,290.0 L256.0,356.0 L242.0,340.0 L78.0,340.0 Z M68.0,338.0 L136.0,338.0 L126.0,348.0 L78.0,348.0 Z M68.0,62.0 L136.0,62.0 L126.0,52.0 L78.0,52.0 Z"/></g><g filter="url(#r1)"><path transform="rotate(0.6 450 200) translate(0 6)" d="M378.0,62.0 L426.0,62.0 L426.0,338.0 L378.0,338.0 Z M378.0,60.0 L536.0,60.0 L550.0,44.0 L552.0,110.0 L538.0,102.0 L426.0,102.0 L426.0,60.0 Z M426.0,180.0 L506.0,180.0 L518.0,168.0 L520.0,230.0 L508.0,220.0 L426.0,220.0 Z M378.0,298.0 L426.0,298.0 L426.0,298.0 L540.0,298.0 L554.0,290.0 L556.0,356.0 L542.0,340.0 L378.0,340.0 Z M368.0,338.0 L436.0,338.0 L426.0,348.0 L378.0,348.0 Z M368.0,62.0 L436.0,62.0 L426.0,52.0 L378.0,52.0 Z"/></g><g filter="url(#r2)"><path transform="rotate(-0.4 750 200) translate(0 -4)" d="M678.0,62.0 L726.0,62.0 L726.0,338.0 L678.0,338.0 Z M678.0,60.0 L836.0,60.0 L850.0,44.0 L852.0,110.0 L838.0,102.0 L726.0,102.0 L726.0,60.0 Z M726.0,180.0 L806.0,180.0 L818.0,168.0 L820.0,230.0 L808.0,220.0 L726.0,220.0 Z M678.0,298.0 L726.0,298.0 L726.0,298.0 L840.0,298.0 L854.0,290.0 L856.0,356.0 L842.0,340.0 L678.0,340.0 Z M668.0,338.0 L736.0,338.0 L726.0,348.0 L678.0,348.0 Z M668.0,62.0 L736.0,62.0 L726.0,52.0 L678.0,52.0 Z"/></g></g>
+</svg>

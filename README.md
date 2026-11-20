@@ -1,8 +1,15 @@
 # Chiang Cheng-Te — portfolio
 
-*Melting into structure.* Portfolio site for a performer, director, designer and trainer working between Prague and Taipei.
+*Melting (in/to) structure.* Portfolio site for a performer, director, designer and trainer working between Prague and Taipei.
 
 It's plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
+
+## Design
+
+- **Structure:** black, an extended grotesque (Archivo), visible column rules.
+- **Melting:** cinnabar red, a soft italic serif for *(in/to)*, duotone images that come into full colour on hover while the page goes dark.
+- **Ritual:** an endless frieze of weathered Delphic E's drifts behind the hero, page titles and footer, breaking apart like ruins at the edges.
+  The frieze graphics are `images/epsilon-frieze.svg` (the carved E's) and `images/ruin-mask.svg` (the broken edges).
 
 ## Pages
 

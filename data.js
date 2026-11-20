@@ -11,7 +11,7 @@
 window.SITE = {
   name: "Chiang Cheng-Te",
   alsoKnownAs: "Peter · Pierre C",
-  motto: "Melting into structure",
+  motto: "Melting (in/to) structure",
   roles: "Performer · Director · Designer · Trainer",
   places: "Prague ⇄ Taipei",
   email: "peterchiang1023@gmail.com",
@@ -238,7 +238,8 @@ window.WORKS = [
 window.PRACTICE = {
   // DRAFT
   intro: [
-    "Training is where the practice is most visible: a daily ritual of attention in which intensity becomes precision — melting into structure.",
+    "A daily ritual of attention.",
+    "Training is where the practice is most visible: intensity becomes precision — melting (in/to) structure.",
     "My teaching is rooted in the method of Theodoros Terzopoulos, which I trained in and now assist at Attis Theatre in Athens: a psychophysical practice working from breath, the pelvis and the voice towards a body of full presence. It is enriched by somatic and improvisation practices — Skinner Releasing, instant composition, contact improvisation — and by theatre anthropology.",
   ],
   // DRAFT — the workshops you offer. Edit, add or remove.
