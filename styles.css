@@ -5,25 +5,25 @@
    Ritual:    a frieze of ruined Delphic E's drifting through the background.
    ========================================================================== */
 :root {
-  --red: #e04a2f;
+  --red: #ff4040;
   --black: #0b0a09;
   --paper: #f3ece2;
   --bg: var(--red);
   --fg: var(--black);
   --rule: rgba(11, 10, 9, 0.28);
-  --frieze: rgba(11, 10, 9, 0.11);
+  --frieze: rgba(11, 10, 9, 0.13);
   --grot: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --serif: "Cormorant Garamond", "Times New Roman", serif;
   --gutter: clamp(12px, 3vw, 40px);
   --cell: 16px;
   --max: 1440px;
-  --fh: clamp(220px, 44vh, 480px); /* frieze height */
+  --tile: clamp(110px, 13vw, 220px); /* width of one Delphic E in the background field */
 }
 body.spot {
   --bg: var(--black);
   --fg: var(--red);
-  --rule: rgba(224, 74, 47, 0.25);
-  --frieze: rgba(224, 74, 47, 0.10);
+  --rule: rgba(255, 64, 64, 0.25);
+  --frieze: rgba(255, 64, 64, 0.10);
 }
 
 * { box-sizing: border-box; }
@@ -81,30 +81,34 @@ em.soft {
 .rules span:last-child { border-right: 1px solid var(--rule); }
 main, .site-footer { position: relative; z-index: 1; }
 
-/* ---------- the Delphic E frieze ---------- */
+/* ---------- the Delphic E field ----------
+   Endless chains of the Delphic E (o|o|o) running diagonally, drifting along
+   their own direction, melting away in a vignette that breaks apart like ruins. */
 .frieze {
-  position: absolute; left: 0; right: 0; height: var(--fh);
-  pointer-events: none; overflow: hidden; z-index: -1;
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: -1;
   color: var(--frieze); transition: color .45s;
-  -webkit-mask: url(images/ruin-mask.svg) 0 0 / 100% 100% no-repeat;
-          mask: url(images/ruin-mask.svg) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(images/melt-mask.svg) 0 0 / 100% 100% no-repeat;
+          mask: url(images/melt-mask.svg) 0 0 / 100% 100% no-repeat;
 }
 .frieze-band {
-  height: 100%; width: calc(100% + var(--fh) * 2.25);
+  position: absolute; inset: -70%;
   background: currentColor;
-  -webkit-mask: url(images/epsilon-frieze.svg) 0 0 / auto 100% repeat-x;
-          mask: url(images/epsilon-frieze.svg) 0 0 / auto 100% repeat-x;
-  animation: drift 120s linear infinite;
+  -webkit-mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat;
+          mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat;
+  transform: rotate(-28deg);
+  animation: drift 70s linear infinite;
   will-change: transform;
 }
-@keyframes drift { to { transform: translateX(calc(var(--fh) * -2.25)); } }
-.frieze.on-dark { color: rgba(224, 74, 47, 0.16); top: 0; --fh: clamp(200px, 34vh, 380px); }
-.page-head .frieze { top: 64px; --fh: clamp(160px, 30vh, 320px); }
-.hero-frieze { top: 18%; }
+@keyframes drift {
+  from { transform: rotate(-28deg) translateX(0); }
+  to   { transform: rotate(-28deg) translateX(calc(-1 * var(--tile))); }
+}
+.frieze.on-dark { color: rgba(255, 64, 64, 0.16); }
+.page-head .frieze { --tile: clamp(90px, 9vw, 150px); }
 .e-mark {
-  display: inline-block; width: .62em; height: 1em; background: currentColor; vertical-align: -0.12em;
-  -webkit-mask: url(images/epsilon.svg) center / contain no-repeat;
-          mask: url(images/epsilon.svg) center / contain no-repeat;
+  display: inline-block; width: 1.05em; height: 1em; background: currentColor; vertical-align: -0.14em;
+  -webkit-mask: url(images/delphic-e.svg) center / contain no-repeat;
+          mask: url(images/delphic-e.svg) center / contain no-repeat;
 }
 @media (prefers-reduced-motion: reduce) {
   .frieze-band, em.soft { animation: none; }
@@ -123,7 +127,7 @@ main, .site-footer { position: relative; z-index: 1; }
   display: flex; align-items: center; gap: 10px; text-decoration: none;
   font-family: var(--grot); font-stretch: 125%; font-weight: 700; font-size: 13px; text-transform: uppercase;
 }
-.brand .e-mark { font-size: 22px; }
+.brand .e-mark { font-size: 20px; }
 .quick { display: flex; gap: 22px; grid-column: 2 / 4; }
 .quick a {
   text-decoration: none; font-stretch: 125%; font-weight: 700; font-size: 13px; text-transform: uppercase;
@@ -138,7 +142,7 @@ main, .site-footer { position: relative; z-index: 1; }
 .plus::before { left: 0; right: 0; top: 10px; height: 2px; }
 .plus::after { top: 0; bottom: 0; left: 10px; width: 2px; }
 .menu-open .plus { transform: rotate(45deg); }
-.menu-open .site-header { background: var(--black); color: var(--red); border-color: rgba(224,74,47,.25); }
+.menu-open .site-header { background: var(--black); color: var(--red); border-color: rgba(255,64,64,.25); }
 
 .menu {
   position: fixed; inset: 0; z-index: 50; background: var(--black); color: var(--red);
@@ -149,12 +153,12 @@ main, .site-footer { position: relative; z-index: 1; }
 .menu-big a {
   text-decoration: none; font-stretch: 125%; font-weight: 800; text-transform: uppercase;
   font-size: clamp(40px, 7vw, 108px); line-height: .92; letter-spacing: -0.03em;
-  border-top: 1px solid rgba(224,74,47,.3); padding: 6px 0 2px;
+  border-top: 1px solid rgba(255,64,64,.3); padding: 6px 0 2px;
 }
 .menu-big a:hover { color: var(--paper); }
-.menu-side { padding: 32px var(--cell); border-left: 1px solid rgba(224,74,47,.3); display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; }
+.menu-side { padding: 32px var(--cell); border-left: 1px solid rgba(255,64,64,.3); display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; }
 .menu-side ul { list-style: none; margin: 0; padding: 0; }
-.menu-side li a { display: block; text-decoration: none; padding: 6px 0; border-top: 1px solid rgba(224,74,47,.2); font-size: 14px; text-transform: uppercase; font-stretch: 112%; }
+.menu-side li a { display: block; text-decoration: none; padding: 6px 0; border-top: 1px solid rgba(255,64,64,.2); font-size: 14px; text-transform: uppercase; font-stretch: 112%; }
 .menu-side li a:hover { color: var(--paper); }
 .menu-side strong { font-weight: 700; }
 

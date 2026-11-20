@@ -7,9 +7,9 @@ It's plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
 ## Design
 
 - **Structure:** black, an extended grotesque (Archivo), visible column rules.
-- **Melting:** cinnabar red, a soft italic serif for *(in/to)*, duotone images that come into full colour on hover while the page goes dark.
-- **Ritual:** an endless frieze of weathered Delphic E's drifts behind the hero, page titles and footer, breaking apart like ruins at the edges.
-  The frieze graphics are `images/epsilon-frieze.svg` (the carved E's) and `images/ruin-mask.svg` (the broken edges).
+- **Melting:** coral red (#FF4040), a soft italic serif for *(in/to)*, duotone images that come into full colour on hover while the page goes dark.
+- **Ritual:** the Delphic E. Repeated, its arcs join into an endless chain (o|o|o) that runs diagonally behind the hero, page titles and footer, drifting slowly. The field melts away in a vignette and breaks apart like ruins at its edges.
+  Graphics: `images/delphic-tile.svg` (the chain), `images/melt-mask.svg` (melt and ruin), `images/delphic-e.svg` (single mark).
 
 ## Pages
 
