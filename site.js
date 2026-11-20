@@ -224,9 +224,12 @@
         ["Form", w.form],
         ["Director", w.director],
         ["Venue", w.venue],
+        ["Production", w.production],
+        ["Support", w.support],
         ["Original title", w.originalTitle],
         ["Recognition", w.award],
       ].filter(([, v]) => v);
+      const linkFacts = (w.links || []).map(([label, url]) => `<div><dt>Website</dt><dd><a href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} ↗</a></dd></div>`).join("");
       const prev = WORKS[(i - 1 + WORKS.length) % WORKS.length];
       const next = WORKS[(i + 1) % WORKS.length];
       const sub = (title, html) => (html ? row(title, html) : "");
@@ -237,7 +240,7 @@
         </section>
         ${w.video ? `<section class="wrap">${videoBlock(w.video, w.videoLabel ? `Watch the ${w.videoLabel.toLowerCase()}` : "Watch")}</section>` : ""}
         ${row(
-          `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`,
+          `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}${linkFacts}</dl>`,
           `<div class="prose">${w.description ? paras(w.description) : `<p>${esc(w.summary)}</p>`}</div>`,
           { cls: "work-main" }
         )}
@@ -246,7 +249,8 @@
         ${sub("Process", w.process?.length ? `<div class="prose">${paras(w.process)}</div>` : "")}
         ${sub("Productions", w.list ? cvRows(w.list.map(([y, t, d]) => [y, t, d])) : "")}
         ${sub("Credits", w.credits?.length ? `<dl class="facts two">${w.credits.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : "")}
-        ${w.gallery?.length ? `<section class="wrap gallery">${w.gallery.map((src) => `<div class="duo"><img src="${esc(src)}" alt="${esc(w.title)}" loading="lazy"></div>`).join("")}</section>` : ""}
+        ${(w.creditGroups || []).map(([title, list]) => row(`Credits<br><span class="thin">${esc(title)}</span>`, `<dl class="facts two">${list.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`)).join("")}
+        ${w.gallery?.length ? `<section class="wrap gallery">${w.gallery.map((src) => `<div class="duo"><img src="${esc(src)}" alt="${esc(w.title)}" loading="lazy"></div>`).join("")}</section>${w.photoCredit ? `<p class="wrap label thin photo-credit">${esc(w.photoCredit)}</p>` : ""}` : ""}
         <nav class="prev-next wrap">
           <a href="${workUrl(prev)}"><span class="label">← Previous</span><strong>${esc(prev.title)}</strong></a>
           <a href="${workUrl(next)}"><span class="label">Next →</span><strong>${esc(next.title)}</strong></a>
