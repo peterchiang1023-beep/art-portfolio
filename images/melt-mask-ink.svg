@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="none">
+<defs>
+  <radialGradient id="v" cx="0.6" cy="0.4" r="0.56">
+    <stop offset="0" stop-color="#fff"/><stop offset="0.2" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
+  </radialGradient>
+  <filter id="m" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+    <!-- large liquid warping of the whole field -->
+    <feTurbulence type="fractalNoise" baseFrequency="0.0032 0.0055" numOctaves="4" seed="3" result="t1"/>
+    <feDisplacementMap in="SourceGraphic" in2="t1" scale="560" xChannelSelector="R" yChannelSelector="G" result="warp"/>
+    <!-- drips: vertical streak noise drags it downward -->
+    <feTurbulence type="fractalNoise" baseFrequency="0.014 0.0012" numOctaves="2" seed="11" result="t2"/>
+    <feDisplacementMap in="warp" in2="t2" scale="340" xChannelSelector="B" yChannelSelector="G" result="drip"/>
+    <!-- blotches: big holes punched through, deeper into the centre -->
+    <feTurbulence type="fractalNoise" baseFrequency="0.0055 0.0075" numOctaves="5" seed="8" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1" result="ng"/>
+    <feComposite in="drip" in2="ng" operator="arithmetic" k1="0" k2="1.35" k3="1.7" k4="-1.08" result="c"/>
+    <!-- gooey threshold: blur then steep contrast = smooth, bold, liquid edges -->
+    <feGaussianBlur in="c" stdDeviation="9" result="cb"/>
+    <feComponentTransfer in="cb" result="goo">
+      <feFuncR type="linear" slope="14" intercept="-6.6"/>
+      <feFuncG type="linear" slope="14" intercept="-6.6"/>
+      <feFuncB type="linear" slope="14" intercept="-6.6"/>
+      <feFuncA type="linear" slope="0" intercept="1"/>
+    </feComponentTransfer>
+    <!-- spatter: scattered ink droplets around the blot -->
+    <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="2" seed="33" result="t4"/>
+    <feComponentTransfer in="t4" result="drops">
+      <feFuncR type="linear" slope="30" intercept="-20.4"/>
+      <feFuncG type="linear" slope="30" intercept="-20.4"/>
+      <feFuncB type="linear" slope="30" intercept="-20.4"/>
+      <feFuncA type="linear" slope="0" intercept="1"/>
+    </feComponentTransfer>
+    <feComposite in="drops" in2="warp" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="dropsW"/>
+    <feComponentTransfer in="dropsW" result="dropsIn">
+      <feFuncR type="linear" slope="6" intercept="-1.2"/>
+      <feFuncG type="linear" slope="6" intercept="-1.2"/>
+      <feFuncB type="linear" slope="6" intercept="-1.2"/>
+      <feFuncA type="linear" slope="0" intercept="1"/>
+    </feComponentTransfer>
+    <feComposite in="goo" in2="dropsIn" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="gooSp"/>
+    <!-- feathered ink fringe on the edges -->
+    <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="21" result="t3"/>
+    <feDisplacementMap in="gooSp" in2="t3" scale="18" xChannelSelector="R" yChannelSelector="G" result="core"/>
+    <feMorphology in="core" operator="dilate" radius="16" result="wide"/>
+    <feGaussianBlur in="wide" stdDeviation="20" result="soft"/>
+    <feColorMatrix in="soft" type="luminanceToAlpha"/>
+  </filter>
+</defs>
+<rect width="1600" height="1000" fill="url(#v)" filter="url(#m)"/>
+</svg>

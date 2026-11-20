@@ -8,8 +8,8 @@ It's plain HTML, CSS and JavaScript with no build step, hosted on GitHub Pages.
 
 - **Structure:** black, an extended grotesque (Archivo), visible column rules.
 - **Melting:** coral red (#FF4040), a soft italic serif for *(in/to)*, duotone images that come into full colour on hover while the page goes dark.
-- **Ritual:** the Delphic E. Repeated, its arcs join into an endless chain (o|o|o) that runs diagonally behind the hero, page titles and footer, drifting slowly. The field melts away in a vignette and breaks apart like ruins at its edges.
-  Graphics: `images/delphic-tile.svg` (the chain), `images/melt-mask.svg` (melt and ruin), `images/delphic-e.svg` (single mark).
+- **Ritual:** the Delphic E (stem, bar, outward arcs), with square-cut ends like the type. Its loop is stretched into an ellipse, so repeated it becomes an endless chain (|0|0|0|) whose waists read as a sideways hourglass and, tilted, like DNA. The chains run diagonally behind the hero, page titles and footer and drift slowly. A bold, liquid ink-blot mask eats the field, with drips and droplets, and a blurred copy bleeds around it like ink in water.
+  Graphics: `images/delphic-tile.svg` / `delphic-tile-ink.svg` (crisp and bled chain), `melt-mask.svg` / `melt-mask-ink.svg` (blot and bleed), `delphic-e.svg` (diagonal mark: stem, loop, stem).
 
 ## Pages
 

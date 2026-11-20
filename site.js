@@ -15,7 +15,8 @@
   // "Melting (in/to) structure" -> MELTING <em>(in/to)</em> STRUCTURE
   const motto = (m = SITE.motto) => esc(m).replace(/\((.*?)\)/, '<em class="soft">($1)</em>');
   // Background frieze of ruined Delphic E's (the ritual motif).
-  const frieze = (cls = "") => `<div class="frieze ${cls}" aria-hidden="true"><div class="frieze-band"></div></div>`;
+  const frieze = (cls = "") =>
+    `<div class="field ${cls}" aria-hidden="true"><div class="frieze ink"><div class="frieze-band"></div></div><div class="frieze"><div class="frieze-band"></div></div></div>`;
 
   // Click-to-play YouTube (nothing loads from YouTube until clicked).
   const videoBlock = (id, label = "Play") => `

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 516 960" width="516" height="960">
+<defs><filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+  <feMorphology operator="dilate" radius="10"/>
+  <feGaussianBlur stdDeviation="16"/>
+  <feComponentTransfer><feFuncA type="linear" slope="1.4"/></feComponentTransfer>
+</filter></defs>
+<g fill="#fff" filter="url(#ink)"><rect x="-20" y="220.0" width="556" height="40"/><rect x="238.0" y="54.0" width="40" height="372.0"/><ellipse cx="0" cy="240" rx="218" ry="150" fill="none" stroke="#fff" stroke-width="40"/><ellipse cx="516" cy="240" rx="218" ry="150" fill="none" stroke="#fff" stroke-width="40"/><rect x="-20" y="700.0" width="556" height="40"/><rect x="-20.0" y="534.0" width="40" height="372.0"/><rect x="496.0" y="534.0" width="40" height="372.0"/><ellipse cx="258.0" cy="720" rx="218" ry="150" fill="none" stroke="#fff" stroke-width="40"/></g></svg>

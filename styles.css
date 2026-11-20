@@ -11,13 +11,13 @@
   --bg: var(--red);
   --fg: var(--black);
   --rule: rgba(11, 10, 9, 0.28);
-  --frieze: rgba(11, 10, 9, 0.13);
+  --frieze: rgba(11, 10, 9, 0.17);
   --grot: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --serif: "Cormorant Garamond", "Times New Roman", serif;
   --gutter: clamp(12px, 3vw, 40px);
   --cell: 16px;
   --max: 1440px;
-  --tile: clamp(110px, 13vw, 220px); /* width of one Delphic E in the background field */
+  --tile: clamp(130px, 15vw, 260px); /* width of one Delphic E in the background field */
 }
 body.spot {
   --bg: var(--black);
@@ -82,13 +82,22 @@ em.soft {
 main, .site-footer { position: relative; z-index: 1; }
 
 /* ---------- the Delphic E field ----------
-   Endless chains of the Delphic E (o|o|o) running diagonally, drifting along
-   their own direction, melting away in a vignette that breaks apart like ruins. */
-.frieze {
+   Endless chains of the Delphic E (|0|0|0|) running diagonally and drifting along
+   their own direction. Two layers move together: the crisp chain, eaten by bold
+   liquid blobs, and a swollen, blurred copy that bleeds around it like ink in water. */
+.field {
   position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: -1;
   color: var(--frieze); transition: color .45s;
+}
+.frieze {
+  position: absolute; inset: 0;
   -webkit-mask: url(images/melt-mask.svg) 0 0 / 100% 100% no-repeat;
           mask: url(images/melt-mask.svg) 0 0 / 100% 100% no-repeat;
+}
+.frieze.ink {
+  opacity: .5;
+  -webkit-mask-image: url(images/melt-mask-ink.svg);
+          mask-image: url(images/melt-mask-ink.svg);
 }
 .frieze-band {
   position: absolute; inset: -70%;
@@ -96,17 +105,21 @@ main, .site-footer { position: relative; z-index: 1; }
   -webkit-mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat;
           mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat;
   transform: rotate(-28deg);
-  animation: drift 70s linear infinite;
+  animation: drift 80s linear infinite;
   will-change: transform;
+}
+.frieze.ink .frieze-band {
+  -webkit-mask-image: url(images/delphic-tile-ink.svg);
+          mask-image: url(images/delphic-tile-ink.svg);
 }
 @keyframes drift {
   from { transform: rotate(-28deg) translateX(0); }
   to   { transform: rotate(-28deg) translateX(calc(-1 * var(--tile))); }
 }
-.frieze.on-dark { color: rgba(255, 64, 64, 0.16); }
-.page-head .frieze { --tile: clamp(90px, 9vw, 150px); }
+.field.on-dark { color: rgba(255, 64, 64, 0.18); }
+.page-head .field { --tile: clamp(100px, 10vw, 170px); }
 .e-mark {
-  display: inline-block; width: 1.05em; height: 1em; background: currentColor; vertical-align: -0.14em;
+  display: inline-block; width: 1.13em; height: 1em; background: currentColor; vertical-align: -0.16em;
   -webkit-mask: url(images/delphic-e.svg) center / contain no-repeat;
           mask: url(images/delphic-e.svg) center / contain no-repeat;
 }
@@ -127,7 +140,7 @@ main, .site-footer { position: relative; z-index: 1; }
   display: flex; align-items: center; gap: 10px; text-decoration: none;
   font-family: var(--grot); font-stretch: 125%; font-weight: 700; font-size: 13px; text-transform: uppercase;
 }
-.brand .e-mark { font-size: 20px; }
+.brand .e-mark { font-size: 24px; }
 .quick { display: flex; gap: 22px; grid-column: 2 / 4; }
 .quick a {
   text-decoration: none; font-stretch: 125%; font-weight: 700; font-size: 13px; text-transform: uppercase;
