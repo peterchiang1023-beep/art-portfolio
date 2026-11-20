@@ -243,7 +243,7 @@
       f.img.setAttribute("y", (wy - b.top - size / 2).toFixed(1));
       f.img.setAttribute("width", size.toFixed(1));
       f.img.setAttribute("height", size.toFixed(1));
-      f.dm.setAttribute("scale", (A * 62).toFixed(1));
+      f.dm.setAttribute("scale", (A * 78).toFixed(1));
       f.on = true;
     });
 
@@ -256,7 +256,7 @@
         const dist = Math.hypot(dx, dy) || 1;
         const g = Math.exp(-((dist / R) ** 2));
         const s = Math.sin(dist / LAMBDA - phase * 2.1);
-        const off = A * g * s * 15 + A * g * Math.sign(dx || 1) * 5;
+        const off = A * g * s * 20 + A * g * Math.sign(dx || 1) * 6;
         d += ` L${(x0 + off).toFixed(1)},${y}`;
       }
       rulePaths[i].setAttribute("d", d);
@@ -287,13 +287,13 @@
       const sx = A * g * Math.sin(p - 0.9);
       const ux = dx / dist, uy = dy / dist;
       const big = it.kind === 1;
-      const kx = 1 + sx * (big ? 0.022 * it.a : 0.006);
-      const ky = 1 + sy * (big ? 0.03 * it.a : 0.009);
+      const kx = 1 + sx * (big ? 0.034 * it.a : 0.01);
+      const ky = 1 + sy * (big ? 0.045 * it.a : 0.015);
       const echo = Math.abs(sy);                                  // 0..~1
-      const off = sy * (big ? 5 * it.a : 1.6);                    // px, along the wave
-      const blur = (big ? 3 + 9 * echo : 1 + 2.5 * echo).toFixed(1);
-      const alpha = Math.round(echo * (big ? 38 : 26));           // % of the text colour
-      const dim = 1 - Math.max(0, -sy) * (big ? 0.22 : 0.16);
+      const off = sy * (big ? 9 * it.a : 2.6);                    // px, along the wave
+      const blur = (big ? 3 + 11 * echo : 1 + 3 * echo).toFixed(1);
+      const alpha = Math.round(echo * (big ? 60 : 40));           // % of the text colour
+      const dim = 1 - Math.max(0, -sy) * (big ? 0.32 : 0.22);
       const st = it.el.style;
       st.transform = `scale(${kx.toFixed(4)},${ky.toFixed(4)})`;
       st.textShadow = alpha > 1
