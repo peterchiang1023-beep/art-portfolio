@@ -23,14 +23,20 @@ command -v git >/dev/null || { echo "git not found."; exit 1; }
 printf "GitHub token (input hidden): "
 read -rs GH_TOKEN
 echo
+# Strip spaces, tabs and stray line breaks picked up while copy-pasting.
+GH_TOKEN="$(printf '%s' "$GH_TOKEN" | tr -d '[:space:]')"
 [ -n "$GH_TOKEN" ] || { echo "No token entered."; exit 1; }
 export GH_TOKEN
 trap 'unset GH_TOKEN' EXIT
 
-OWNER="$(gh api user --jq .login 2>/dev/null)" || {
-  echo "That token was rejected by GitHub. Check it hasn't expired and has the right scopes."
+if ! OWNER="$(gh api user --jq .login 2>/tmp/deploy-gh-err.$$)"; then
+  echo "GitHub rejected the token: $(head -1 /tmp/deploy-gh-err.$$)"
+  rm -f /tmp/deploy-gh-err.$$
+  echo "Likely causes: the token was deleted or has expired, or it was only partly pasted."
+  echo "(The token you pasted was ${#GH_TOKEN} characters long; a classic token is 40.)"
   exit 1
-}
+fi
+rm -f /tmp/deploy-gh-err.$$
 echo "Signed in as $OWNER (for this run only)."
 
 # --- Make sure there is something committed to push ------------------------
