@@ -122,6 +122,39 @@
       if (c) c.classList.add("is-lit");
       document.body.classList.toggle("spot", !!c);
     });
+  } else {
+    // Touch: press and hold a work (or a video) to darken the page and light it up.
+    // A quick swipe past doesn't trigger it, so scrolling never flickers.
+    let pressTimer, lit = null, sx = 0, sy = 0;
+    const release = () => {
+      clearTimeout(pressTimer);
+      if (!lit) return;
+      const el = lit;
+      lit = null;
+      setTimeout(() => {
+        if (lit) return;
+        el.classList.remove("is-lit");
+        document.body.classList.remove("spot");
+      }, 450);
+    };
+    document.addEventListener("touchstart", (e) => {
+      const c = e.target.closest(".card, .video.duo, .gallery .duo");
+      if (!c) return;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => {
+        document.querySelectorAll(".is-lit").forEach((el) => el.classList.remove("is-lit"));
+        lit = c;
+        c.classList.add("is-lit");
+        document.body.classList.add("spot");
+      }, 140);
+    }, { passive: true });
+    document.addEventListener("touchmove", (e) => {
+      const t = e.touches[0];
+      if (Math.hypot(t.clientX - sx, t.clientY - sy) > 10) release();
+    }, { passive: true });
+    document.addEventListener("touchend", release, { passive: true });
+    document.addEventListener("touchcancel", release, { passive: true });
   }
 
   const main = $("main");

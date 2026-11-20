@@ -2,19 +2,19 @@
    The hidden wave.
    An invisible swell follows the pointer — slowly, with its own breathing rhythm.
    You never see it, only what it moves:
-     - display type swells and stretches letter by letter, in place
-     - reading text breathes word by word (a few percent), in place, so it stays legible
-     Nothing is moved or rotated; everything deforms where it stands.
+     - text barely changes size (a few percent) but casts a faint ghost along the
+       wave and dims in its trough — nothing is moved or rotated
      - the vertical column rules bend around it
-     - the Delphic E field warps like water
-   Images and videos are never touched.
-   Off on touch devices and when the system asks for reduced motion.
+     - the Delphic E field warps like water (desktop only)
+   On phones it follows the finger, and drifts on its own when nobody is touching.
+   Images and videos are never touched. Off when the system asks for reduced motion.
    ========================================================================== */
 (() => {
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!fine || calm) return;
-  document.documentElement.classList.add("has-wave");
+  if (calm) return;
+  const touch = !fine;
+  document.documentElement.classList.add("has-wave", touch ? "wave-touch" : "wave-pointer");
 
   const PROTECTED = ".video, .duo, .cover, .menu, .site-header";
   const DISPLAY = ".giant, .title, .hero-motto, .footer-motto, .statement .lead, .ways a > span, .card-meta.big h3, .offer h3, .prev-next strong";
@@ -92,7 +92,7 @@
   defs.setAttribute("height", "0");
   defs.style.position = "absolute";
   document.body.append(defs);
-  const fields = [...document.querySelectorAll(".field")].map((el, i) => {
+  const fields = (touch ? [] : [...document.querySelectorAll(".field")]).map((el, i) => {
     const f = document.createElementNS(NS, "filter");
     f.id = `wave-f${i}`;
     f.setAttribute("color-interpolation-filters", "sRGB");
@@ -182,6 +182,25 @@
     inside = true;
   }, { passive: true });
   document.addEventListener("pointerleave", () => (inside = false));
+
+  // phones: follow the finger; when nobody touches, drift on a slow path of its own
+  let touching = false, lastTouch = -1e9;
+  if (touch) {
+    inside = true;
+    const fromTouch = (e) => {
+      const t0 = e.touches[0];
+      if (!t0) return;
+      const d = Math.hypot(t0.clientX - mx, t0.clientY - my);
+      energy = Math.min(1, energy + d / 1600);
+      mx = t0.clientX; my = t0.clientY;
+      touching = true; lastTouch = performance.now();
+    };
+    addEventListener("touchstart", fromTouch, { passive: true });
+    addEventListener("touchmove", fromTouch, { passive: true });
+    addEventListener("touchend", () => { touching = false; lastTouch = performance.now(); }, { passive: true });
+    let lastY = scrollY;
+    addEventListener("scroll", () => { energy = Math.min(1, energy + Math.abs(scrollY - lastY) / 2500); lastY = scrollY; }, { passive: true });
+  }
   document.documentElement.addEventListener("mouseleave", () => (inside = false));
 
   const LAMBDA = 95; // distance between wave crests, px
@@ -190,6 +209,11 @@
     const dt = Math.min(0.05, (now - prev) / 1000);
     prev = now;
     const t = now / 1000;
+    if (touch && !touching && now - lastTouch > 1800) {
+      // idle drift: a slow, never-repeating loop around the screen
+      mx = innerWidth * (0.5 + 0.34 * Math.sin(t * 0.13) + 0.08 * Math.sin(t * 0.41 + 1));
+      my = innerHeight * (0.45 + 0.3 * Math.sin(t * 0.09 + 2) + 0.07 * Math.sin(t * 0.33));
+    }
 
     // Following: a spring whose stiffness drifts, so the pursuit is never mechanical.
     const k = Math.max(0.9, 3.2 + 1.6 * Math.sin(t * 0.37) + 0.9 * Math.sin(t * 0.91 + 2.1));
@@ -219,7 +243,7 @@
       f.img.setAttribute("y", (wy - b.top - size / 2).toFixed(1));
       f.img.setAttribute("width", size.toFixed(1));
       f.img.setAttribute("height", size.toFixed(1));
-      f.dm.setAttribute("scale", (A * 95).toFixed(1));
+      f.dm.setAttribute("scale", (A * 62).toFixed(1));
       f.on = true;
     });
 
@@ -232,7 +256,7 @@
         const dist = Math.hypot(dx, dy) || 1;
         const g = Math.exp(-((dist / R) ** 2));
         const s = Math.sin(dist / LAMBDA - phase * 2.1);
-        const off = A * g * s * 26 + A * g * Math.sign(dx || 1) * 8;
+        const off = A * g * s * 15 + A * g * Math.sign(dx || 1) * 5;
         d += ` L${(x0 + off).toFixed(1)},${y}`;
       }
       rulePaths[i].setAttribute("d", d);
@@ -245,26 +269,37 @@
       const dx = it.x - cx, dy = it.y - cy;
       const d2 = dx * dx + dy * dy;
       if (d2 > reach2 || A < 0.004) {
-        if (it.on) { it.el.style.transform = ""; it.on = false; }
+        if (it.on) {
+          const st = it.el.style;
+          st.transform = st.textShadow = st.opacity = "";
+          it.on = false;
+        }
         continue;
       }
       const dist = Math.sqrt(d2) || 1;
       const g = Math.exp(-d2 / (R * R));
-      // Nothing moves or turns: each letter / word stays where it is and only
-      // swells, stretches or squeezes in place. Height and width are slightly out
-      // of step (the second sine lags), which makes the deformation feel liquid.
+      // Nothing moves or turns. The wave is felt more than seen:
+      //  - size changes only a few percent (height and width slightly out of step)
+      //  - a faint, blurred ghost of the letter drifts out along the wave, like refraction
+      //  - the trough dims the text a little, as if a shadow passes
       const p = dist / LAMBDA - phase * 2.1 + it.j;
       const sy = A * g * Math.sin(p);
       const sx = A * g * Math.sin(p - 0.9);
-      let kx, ky;
-      if (it.kind === 1) {
-        kx = 1 + sx * 0.16 * it.a;   // display letters: up to ~±20% taller, ~±16% wider
-        ky = 1 + sy * 0.22 * it.a;
-      } else {
-        kx = 1 + sx * 0.035;         // reading words: ±4–5%, enough to feel, easy to read
-        ky = 1 + sy * 0.05;
-      }
-      it.el.style.transform = `scale(${kx.toFixed(4)},${ky.toFixed(4)})`;
+      const ux = dx / dist, uy = dy / dist;
+      const big = it.kind === 1;
+      const kx = 1 + sx * (big ? 0.022 * it.a : 0.006);
+      const ky = 1 + sy * (big ? 0.03 * it.a : 0.009);
+      const echo = Math.abs(sy);                                  // 0..~1
+      const off = sy * (big ? 5 * it.a : 1.6);                    // px, along the wave
+      const blur = (big ? 3 + 9 * echo : 1 + 2.5 * echo).toFixed(1);
+      const alpha = Math.round(echo * (big ? 38 : 26));           // % of the text colour
+      const dim = 1 - Math.max(0, -sy) * (big ? 0.22 : 0.16);
+      const st = it.el.style;
+      st.transform = `scale(${kx.toFixed(4)},${ky.toFixed(4)})`;
+      st.textShadow = alpha > 1
+        ? `${(ux * off).toFixed(1)}px ${(uy * off).toFixed(1)}px ${blur}px color-mix(in srgb, currentColor ${alpha}%, transparent)`
+        : "";
+      st.opacity = dim.toFixed(3);
       it.on = true;
     }
 

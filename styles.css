@@ -406,3 +406,5 @@ body.spot .card.is-lit { color: var(--paper); }
 .has-wave .video, .has-wave .video *, .has-wave .menu, .has-wave .menu * { cursor: pointer; }
 .photo-credit { margin-top: 10px; padding-left: calc(var(--gutter) + var(--cell)) !important; }
 .row-label .thin { font-weight: 400; }
+/* touch: holding an image lights it up — keep the phone's save-image menu from interrupting */
+@media (hover: none) { .card, .duo img, .video { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; } }
