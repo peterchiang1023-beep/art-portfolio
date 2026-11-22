@@ -41,6 +41,8 @@ rather than four separate careers.
 | `index.html`, `works.html`, `work.html`, `practice.html`, `about.html` | Thin shells (fonts + scripts). Project pages are `work.html?id=<work id>`. |
 | `images/` | `portrait.jpg`, `<work-id>/NN.jpg` galleries, generated SVGs (below), `wave-map.png`, `favicon.svg`. |
 | `tools/delphic.py` | Regenerates `delphic-tile.svg`, `delphic-tile-ink.svg`, `melt-mask.svg`, `melt-mask-ink.svg`, `delphic-e.svg`, `favicon.svg`: `python3 tools/delphic.py images` |
+| `tools/build_prana.py` | Builds the Prana Sans fonts in `fonts/` from Archivo (see Design → Type). |
+| `fonts/` | Prana Sans web fonts + `OFL.txt` (the licence must ship with them). |
 | `tools/wavemap.py` | Regenerates `images/wave-map.png` (ripple displacement map): `python3 tools/wavemap.py images/wave-map.png` |
 | `deploy.sh` | Token-prompting publish script (see above). |
 
@@ -52,9 +54,22 @@ otherwise the YouTube thumbnail; otherwise a black typographic poster.
 ## Design system (agreed with the artist — keep it)
 
 - **Colour:** coral red `#FF4040` page, near-black `#0b0a09` type, paper `#f3ece2` for lit text. No gradients on the page.
-- **Type:** Archivo (Google Fonts, variable, `font-stretch: 125%` = extended grotesque, uppercase for labels/headings)
-  for structure; Cormorant Garamond italic for the soft *(in/to)* and the poetic statement lines.
-  The motto renders MELTING / *(in/to)* / STRUCTURE — `(in/to)` slowly blurs (CSS `soften` animation).
+- **Type: Prana Sans** — the artist's own typeface (agreed Nov 2026), used for **every** text on the site. It is
+  Archivo (SIL OFL 1.1, no reserved name) reshaped by `tools/build_prana.py`: every shape draws in at its waist
+  (breath) and is turned slightly there; round inner spaces turn too. Two cuts exist:
+  - **Strong** (the artist's "draft 5") — **all text** uses it, still. Self-hosted in `fonts/PranaSansStrong*`
+    (the 9 upright weight/width combos the site uses + Light Italic at 100%/112%, ~40 KB each, Latin incl. Czech).
+    Built with `python3 tools/build_prana.py --strong <Archivo VF> <Archivo Italic VF> <out-dir>`.
+  - **Breath** — variable fonts with a custom `BRTH` axis (0 = the quiet, clearer cut; 100 = Strong).
+    **Big titles** (`.giant`, `.title`, `.footer-motto`) use `fonts/PranaSansBreath*` and slowly breathe
+    (`prana-breathe`, 14 s: start in Strong, let go into the clear cut, rest, return — the artist asked for
+    this direction: from dynamic to calm, not the other way). The artist wanted titles to be
+    "sometimes less dynamic and clear". Built by the default `build_prana.py` run (which also writes the quiet statics).
+  Light Italic (wider spacing) is the soft voice for *(in/to)* and the statement lines (it replaced Cormorant
+  Garamond); there are no Google Fonts any more. `fonts/OFL.txt` must stay with the fonts. Source TTFs:
+  `Archivo[wdth,wght].ttf` and `Archivo-Italic[wdth,wght].ttf` from google/fonts `ofl/archivo/`; needs fontTools + brotli.
+  Artist feedback history: rejected a geometric display face (crossing bars, chain, drips); rejected literal
+  "melting" (soft feet, round drops); liked the quiet cut, then chose the Strong cut for text and breathing for titles.
 - **Grid:** visible thin vertical column rules (thirds), label column + content columns (`.row`). Inspired by
   the *style* of adamclarkecolour.com (flat red, black extended caps, rules, "+" menu, spotlight hover) —
   adapted, **not copied**; keep it original.
@@ -65,8 +80,10 @@ otherwise the YouTube thumbnail; otherwise a black typographic poster.
 - **The Delphic E motif** (from the artist's own sketch): central stem, horizontal bar, outward arcs; **square-cut
   stroke ends** (match the font, not rounded); the loop is an **ellipse ~1.45× long** (reads as a sideways
   hourglass / DNA). Repeated, arcs join into an endless chain `|0|0|0|` → `delphic-tile.svg`, two offset rows.
-  Background field (`.field`, built by `frieze()` in site.js): chains rotated **−28°**, drifting along their own
-  axis (80 s/cycle), behind the hero, page titles and footer. Two layers: crisp chain masked by
+  Background field (`.field`, built by `frieze()` in site.js): chains rotated **−28°**, behind the hero, page
+  titles and footer. Each chain is its own strip (16 per layer): it drifts along its axis (40 s per E) and spins
+  around that axis like DNA (60 s per turn); neighbouring chains drift and spin in opposite directions. Fields out
+  of view pause (IntersectionObserver), and the desktop warp filter is attached only while the wave is over a field. Two layers: crisp chain masked by
   `melt-mask.svg` (bold liquid ink blot: warp, drips, holes, droplets) + swollen/blurred chain masked by
   `melt-mask-ink.svg` (ink bleeding into wet paper). Pattern ~17% black on red; on black it turns red.
   The logo (name mark + favicon) is a **diagonal stem–loop–stem** unit (starts and ends with a stroke).

@@ -15,8 +15,12 @@
   // "Melting (in/to) structure" -> MELTING <em>(in/to)</em> STRUCTURE
   const motto = (m = SITE.motto) => esc(m).replace(/\((.*?)\)/, '<em class="soft">($1)</em>');
   // Background frieze of ruined Delphic E's (the ritual motif).
+  // Each chain is its own strip, so it can spin around its own axis (like DNA, or the earth).
+  // Both layers get the same strips with the same timing, so the ink copy turns with the crisp chain.
+  const CHAINS = 16; // just enough to cover the visible part of the rotated band
+  const chains = Array.from({ length: CHAINS }, (_, i) => `<i class="chain${i % 2 ? " alt" : ""}" style="--i:${i}"></i>`).join("");
   const frieze = (cls = "") =>
-    `<div class="field ${cls}" aria-hidden="true"><div class="frieze ink"><div class="frieze-band"></div></div><div class="frieze"><div class="frieze-band"></div></div></div>`;
+    `<div class="field ${cls}" aria-hidden="true"><div class="frieze ink"><div class="frieze-band">${chains}</div></div><div class="frieze"><div class="frieze-band">${chains}</div></div></div>`;
 
   // Click-to-play YouTube (nothing loads from YouTube until clicked).
   const videoBlock = (id, label = "Play") => `
@@ -123,37 +127,45 @@
       document.body.classList.toggle("spot", !!c);
     });
   } else {
-    // Touch: press and hold a work (or a video) to darken the page and light it up.
-    // A quick swipe past doesn't trigger it, so scrolling never flickers.
-    let pressTimer, lit = null, sx = 0, sy = 0;
+    // Touch: the moment a finger lands on a work (or a video), the page darkens and it lights up.
+    // While the finger stays down — even scrolling — whatever work is under it stays lit;
+    // after lifting, the light lingers a moment so even a quick tap is clearly seen.
+    const WORK = ".card, .video.duo, .gallery .duo";
+    let lit = null, fadeTimer;
+    const light = (c) => {
+      clearTimeout(fadeTimer);
+      if (c === lit) return;
+      if (lit) lit.classList.remove("is-lit");
+      lit = c;
+      if (c) c.classList.add("is-lit");
+      document.body.classList.toggle("spot", !!c);
+    };
     const release = () => {
-      clearTimeout(pressTimer);
       if (!lit) return;
-      const el = lit;
-      lit = null;
-      setTimeout(() => {
-        if (lit) return;
-        el.classList.remove("is-lit");
-        document.body.classList.remove("spot");
-      }, 450);
+      clearTimeout(fadeTimer);
+      fadeTimer = setTimeout(() => light(null), 650);
     };
     document.addEventListener("touchstart", (e) => {
-      const c = e.target.closest(".card, .video.duo, .gallery .duo");
-      if (!c) return;
-      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-      clearTimeout(pressTimer);
-      pressTimer = setTimeout(() => {
-        document.querySelectorAll(".is-lit").forEach((el) => el.classList.remove("is-lit"));
-        lit = c;
-        c.classList.add("is-lit");
-        document.body.classList.add("spot");
-      }, 140);
+      const c = e.target.closest(WORK);
+      if (c) light(c);
+      else release();
     }, { passive: true });
+    let moveQueued = false, fx = 0, fy = 0;
     document.addEventListener("touchmove", (e) => {
       const t = e.touches[0];
-      if (Math.hypot(t.clientX - sx, t.clientY - sy) > 10) release();
+      if (!t) return;
+      fx = t.clientX; fy = t.clientY;
+      if (moveQueued) return;
+      moveQueued = true;
+      requestAnimationFrame(() => {
+        moveQueued = false;
+        const under = document.elementFromPoint(fx, fy);
+        const c = under && under.closest(WORK);
+        if (c) light(c);
+        else release();
+      });
     }, { passive: true });
-    document.addEventListener("touchend", release, { passive: true });
+    document.addEventListener("touchend", (e) => { if (!e.touches.length) release(); }, { passive: true });
     document.addEventListener("touchcancel", release, { passive: true });
   }
 
@@ -330,4 +342,12 @@
   };
 
   (pages[page] || pages.home)();
+
+  // Fields that are scrolled out of view stop animating, so only what you see costs anything.
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.target.classList.toggle("idle", !e.isIntersecting);
+    }, { rootMargin: "100px" });
+    document.querySelectorAll(".field").forEach((f) => io.observe(f));
+  }
 })();

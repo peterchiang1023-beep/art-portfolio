@@ -119,8 +119,8 @@
     dm.setAttribute("scale", "0");
     f.append(flood, img, comp, dm);
     defs.append(f);
-    el.style.filter = `url(#${f.id})`;
-    return { el, img, dm, on: false };
+    // the filter is attached only while the wave is actually over the field (see frame())
+    return { el, img, dm, on: false, url: `url(#${f.id})` };
   });
 
   // ---------- 4. measure (positions are cached; transforms never affect layout) ----------
@@ -177,29 +177,37 @@
 
   addEventListener("pointermove", (e) => {
     const d = Math.hypot(e.clientX - mx, e.clientY - my);
-    energy = Math.min(1, energy + d / 1400);
+    energy = Math.min(1, energy + d / 700); // same responsiveness as a finger on the phone
     mx = e.clientX; my = e.clientY;
     inside = true;
   }, { passive: true });
   document.addEventListener("pointerleave", () => (inside = false));
 
-  // phones: follow the finger; when nobody touches, drift on a slow path of its own
-  let touching = false, lastTouch = -1e9;
+  // phones: follow the finger closely; when nobody touches, drift on a slow path of its own.
+  // A touch gives the wave a push and "grip" swells it while the finger is down,
+  // so scrolling with a finger leaves a clear wake right where the finger is.
+  let touching = false, lastTouch = -1e9, grip = 0;
   if (touch) {
     inside = true;
-    const fromTouch = (e) => {
+    const fromTouch = (e, push) => {
       const t0 = e.touches[0];
       if (!t0) return;
       const d = Math.hypot(t0.clientX - mx, t0.clientY - my);
-      energy = Math.min(1, energy + d / 1600);
+      energy = Math.min(1, energy + push + (push ? 0 : d / 650));
       mx = t0.clientX; my = t0.clientY;
       touching = true; lastTouch = performance.now();
     };
-    addEventListener("touchstart", fromTouch, { passive: true });
-    addEventListener("touchmove", fromTouch, { passive: true });
-    addEventListener("touchend", () => { touching = false; lastTouch = performance.now(); }, { passive: true });
+    addEventListener("touchstart", (e) => fromTouch(e, 0.3), { passive: true });
+    addEventListener("touchmove", (e) => fromTouch(e, 0), { passive: true });
+    const lift = () => { touching = false; lastTouch = performance.now(); };
+    addEventListener("touchend", lift, { passive: true });
+    addEventListener("touchcancel", lift, { passive: true });
     let lastY = scrollY;
-    addEventListener("scroll", () => { energy = Math.min(1, energy + Math.abs(scrollY - lastY) / 2500); lastY = scrollY; }, { passive: true });
+    addEventListener("scroll", () => {
+      energy = Math.min(1, energy + Math.abs(scrollY - lastY) / 1100);
+      lastY = scrollY;
+      if (!touching) lastTouch = performance.now(); // momentum scroll: keep the wave where the finger let go
+    }, { passive: true });
   }
   document.documentElement.addEventListener("mouseleave", () => (inside = false));
 
@@ -216,7 +224,12 @@
     }
 
     // Following: a spring whose stiffness drifts, so the pursuit is never mechanical.
-    const k = Math.max(0.9, 3.2 + 1.6 * Math.sin(t * 0.37) + 0.9 * Math.sin(t * 0.91 + 2.1));
+    let k = Math.max(0.9, 3.2 + 1.6 * Math.sin(t * 0.37) + 0.9 * Math.sin(t * 0.91 + 2.1));
+    // "grip": while a finger is down (phone) or the pointer is over the page (computer),
+    // the wave swells and stays close instead of trailing far behind. Quick in, slow out.
+    const held = touch ? touching : inside;
+    grip += ((held ? 1 : 0) - grip) * Math.min(1, dt * (held ? 6 : 1.2));
+    k *= 1 + 4 * grip;
     const damp = 2 * Math.sqrt(k) * 0.82; // slightly under-damped: a little sway when it arrives
     vx += ((mx - wx) * k - vx * damp) * dt;
     vy += ((my - wy) * k - vy * damp) * dt;
@@ -226,7 +239,7 @@
     const breath = 0.6 + 0.22 * Math.sin(t * 0.53) + 0.12 * Math.sin(t * 1.37 + 1.3) + 0.06 * Math.sin(t * 2.9 + 0.4);
     energy *= Math.exp(-dt * 0.45);
     presence += ((inside ? 1 : 0) - presence) * Math.min(1, dt * 0.9);
-    const A = presence * (0.5 * breath + 0.7 * energy);        // overall strength, ~0..1.2
+    const A = presence * (0.5 * breath + 0.7 * energy + 0.45 * grip); // overall strength, ~0..1.6
     const R = 250 + 70 * Math.sin(t * 0.23) + 160 * energy;     // reach, px
     phase += dt * (1.0 + 0.45 * Math.sin(t * 0.29) + 0.6 * energy); // rings travel outward, unevenly
 
@@ -236,14 +249,18 @@
     // field warp
     fields.forEach((f, i) => {
       const b = boxes[i];
-      const visible = b.bottom > 0 && b.top < innerHeight && A > 0.01;
-      if (!visible) { if (f.on) { f.dm.setAttribute("scale", "0"); f.on = false; } return; }
       const size = R * 3.2;
+      // only filter when the ripple overlaps this field on screen; otherwise drop the filter
+      // entirely, because even a zero-strength SVG filter re-renders the whole field every frame
+      const near = wx + size / 2 > b.left && wx - size / 2 < b.right && wy + size / 2 > b.top && wy - size / 2 < b.bottom;
+      const visible = b.bottom > 0 && b.top < innerHeight && A > 0.01 && near;
+      if (!visible) { if (f.on) { f.el.style.filter = ""; f.on = false; } return; }
+      if (!f.on) f.el.style.filter = f.url;
       f.img.setAttribute("x", (wx - b.left - size / 2).toFixed(1));
       f.img.setAttribute("y", (wy - b.top - size / 2).toFixed(1));
       f.img.setAttribute("width", size.toFixed(1));
       f.img.setAttribute("height", size.toFixed(1));
-      f.dm.setAttribute("scale", (A * 78).toFixed(1));
+      f.dm.setAttribute("scale", (Math.min(A, 1.2) * 78).toFixed(1)); // field warp keeps its old strength
       f.on = true;
     });
 
@@ -264,11 +281,14 @@
 
     // text
     const cx = wx + scrollX, cy = wy + scrollY;
-    const reach2 = (R * 2.4) ** 2;
+    // beyond ~1.9 R the effect is under a few percent, so those letters are left alone,
+    // and so is anything scrolled out of view
+    const reach2 = (R * 1.9) ** 2;
+    const top = scrollY - 80, bottom = scrollY + innerHeight + 80;
     for (const it of items) {
       const dx = it.x - cx, dy = it.y - cy;
       const d2 = dx * dx + dy * dy;
-      if (d2 > reach2 || A < 0.004) {
+      if (d2 > reach2 || A < 0.004 || it.y < top || it.y > bottom) {
         if (it.on) {
           const st = it.el.style;
           st.transform = st.textShadow = st.opacity = "";

@@ -1,7 +1,26 @@
+/* Prana Sans — the portfolio's own typeface: Archivo (SIL OFL 1.1, see fonts/OFL.txt) reshaped so every
+   mark breathes at its waist around a straight axis. Rebuild with tools/build_prana.py.
+   All text uses the still "strong" cut (the artist's draft 5). Big titles use the breathing cut
+   ("Prana Sans Breath", a variable font with a BRTH axis: 0 = quiet and clear, 100 = the strong cut)
+   and slowly breathe between the two — see "big titles breathe" below. */
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrong-Regular.woff2) format("woff2"); font-weight: 400; font-stretch: 100%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrong-Medium.woff2) format("woff2"); font-weight: 500; font-stretch: 100%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrong-SemiBold.woff2) format("woff2"); font-weight: 600; font-stretch: 100%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongSemiExpanded-Regular.woff2) format("woff2"); font-weight: 400; font-stretch: 112%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongSemiExpanded-Bold.woff2) format("woff2"); font-weight: 700; font-stretch: 112%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongExpanded-Regular.woff2) format("woff2"); font-weight: 400; font-stretch: 125%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongExpanded-Medium.woff2) format("woff2"); font-weight: 500; font-stretch: 125%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongExpanded-Bold.woff2) format("woff2"); font-weight: 700; font-stretch: 125%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongExpanded-ExtraBold.woff2) format("woff2"); font-weight: 800; font-stretch: 125%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrong-LightItalic.woff2) format("woff2"); font-weight: 300; font-stretch: 100%; font-style: italic; font-display: swap; }
+@font-face { font-family: "Prana Sans"; src: url(fonts/PranaSansStrongSemiExpanded-LightItalic.woff2) format("woff2"); font-weight: 300; font-stretch: 112%; font-style: italic; font-display: swap; }
+@font-face { font-family: "Prana Sans Breath"; src: url(fonts/PranaSansBreathExpanded-ExtraBold.woff2) format("woff2"); font-weight: 800; font-stretch: 125%; font-display: swap; }
+@font-face { font-family: "Prana Sans Breath"; src: url(fonts/PranaSansBreath-LightItalic.woff2) format("woff2"); font-weight: 300; font-stretch: 100% 112%; font-style: italic; font-display: swap; }
+
 /* ==========================================================================
    Melting (in/to) structure
    Structure: black, an extended grotesque, visible column rules.
-   Melting:   cinnabar red, soft italic serif, duotone images that come alive.
+   Melting:   cinnabar red, soft light italic, duotone images that come alive.
    Ritual:    a frieze of ruined Delphic E's drifting through the background.
    ========================================================================== */
 :root {
@@ -12,8 +31,8 @@
   --fg: var(--black);
   --rule: rgba(11, 10, 9, 0.28);
   --frieze: rgba(11, 10, 9, 0.17);
-  --grot: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --serif: "Cormorant Garamond", "Times New Roman", serif;
+  --grot: "Prana Sans", "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --serif: "Prana Sans", "Archivo", sans-serif; /* the soft voice: Prana Sans Light Italic */
   --gutter: clamp(12px, 3vw, 40px);
   --cell: 16px;
   --max: 1440px;
@@ -63,7 +82,7 @@ button { font: inherit; color: inherit; }
 .title { font-size: clamp(38px, 6.4vw, 100px); line-height: .9; overflow-wrap: anywhere; max-width: 16ch; }
 em.soft {
   font-family: var(--serif); font-style: italic; font-weight: 300;
-  text-transform: none; letter-spacing: 0; font-stretch: normal;
+  text-transform: none; letter-spacing: .03em; font-stretch: 112%;
   display: inline-block; padding: 0 .08em;
   animation: soften 7s ease-in-out infinite alternate;
 }
@@ -88,6 +107,7 @@ main, .site-footer { position: relative; z-index: 1; }
 .field {
   position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: -1;
   color: var(--frieze); transition: color .45s;
+  contain: strict; /* changes inside never make the browser recheck the rest of the page */
 }
 .frieze {
   position: absolute; inset: 0;
@@ -101,20 +121,35 @@ main, .site-footer { position: relative; z-index: 1; }
 }
 .frieze-band {
   position: absolute; inset: -70%;
-  background: currentColor;
-  -webkit-mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat;
-          mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat;
+  display: flex; flex-direction: column; justify-content: center; overflow: hidden;
   transform: rotate(-28deg);
-  animation: drift 80s linear infinite;
-  will-change: transform;
+  --chain-h: calc(var(--tile) * 480 / 516); /* one chain = half of the two-row tile */
 }
-.frieze.ink .frieze-band {
+/* one chain: the top row of the tile (or the bottom, offset row for .alt), spinning on its axis */
+.chain {
+  flex: none; height: var(--chain-h);
+  background: currentColor;
+  -webkit-mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat-x;
+          mask: url(images/delphic-tile.svg) 0 0 / var(--tile) auto repeat-x;
+  /* drift along the chain (translate) and spin on its axis (transform) run side by side */
+  animation: drift 40s linear infinite, spin 60s linear infinite;
+  animation-delay: 0s, calc(var(--i) * -2.6s); /* neighbours turn slightly out of step */
+}
+/* every other chain travels and turns the opposite way to its neighbours */
+.chain.alt { animation-direction: reverse, reverse; }
+.field.idle .chain { animation-play-state: paused; }
+.chain.alt { -webkit-mask-position: 0 calc(-1 * var(--chain-h)); mask-position: 0 calc(-1 * var(--chain-h)); }
+.frieze.ink .chain {
   -webkit-mask-image: url(images/delphic-tile-ink.svg);
           mask-image: url(images/delphic-tile-ink.svg);
 }
 @keyframes drift {
-  from { transform: rotate(-28deg) translateX(0); }
-  to   { transform: rotate(-28deg) translateX(calc(-1 * var(--tile))); }
+  from { translate: 0 0; }
+  to   { translate: calc(-1 * var(--tile)) 0; }
+}
+@keyframes spin {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(360deg); }
 }
 .field.on-dark { color: rgba(255, 64, 64, 0.18); }
 .page-head .field { --tile: clamp(100px, 10vw, 170px); }
@@ -124,7 +159,7 @@ main, .site-footer { position: relative; z-index: 1; }
           mask: url(images/delphic-e.svg) center / contain no-repeat;
 }
 @media (prefers-reduced-motion: reduce) {
-  .frieze-band, em.soft { animation: none; }
+  .frieze-band, .chain, em.soft { animation: none; }
   html { scroll-behavior: auto; }
 }
 
@@ -225,7 +260,7 @@ main { padding-bottom: 96px; }
 }
 
 /* ---------- statement ---------- */
-.statement p { font: italic 300 clamp(22px, 2.5vw, 34px)/1.25 var(--serif); max-width: 30ch; margin-bottom: .7em; }
+.statement p { font: italic 300 clamp(22px, 2.5vw, 34px)/1.25 var(--serif); letter-spacing: .02em; max-width: 30ch; margin-bottom: .7em; }
 .statement p.lead {
   font: 800 clamp(26px, 3.6vw, 54px)/.95 var(--grot); font-stretch: 125%; font-style: normal;
   text-transform: uppercase; letter-spacing: -0.02em; max-width: 18ch; margin-bottom: .55em;
@@ -408,3 +443,25 @@ body.spot .card.is-lit { color: var(--paper); }
 .row-label .thin { font-weight: 400; }
 /* touch: holding an image lights it up — keep the phone's save-image menu from interrupting */
 @media (hover: none) { .card, .duo img, .video { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; } }
+/* touch: the darkroom switches on fast (it fades out at the normal, slower pace) */
+@media (hover: none) {
+  body.spot, body.spot .rules span, body.spot .field, body.spot .site-header, body.spot .wave-rules path { transition-duration: .18s; }
+  body.spot .card, body.spot .video, body.spot .duo img { transition-duration: .18s, .18s, .8s; }
+}
+
+/* ---------- big titles breathe ----------
+   The name, page titles and the footer motto slowly breathe: they start in the strong shape the rest
+   of the text has, slowly let go into the quiet, clearer cut, rest there, and return. Letters inherit the value. */
+.giant, .title, .footer-motto {
+  font-family: "Prana Sans Breath", var(--grot);
+  animation: prana-breathe 14s ease-in-out infinite;
+}
+.footer-motto em.soft, .giant em.soft, .title em.soft { font-family: "Prana Sans Breath", var(--serif); }
+@keyframes prana-breathe {
+  0%, 22%   { font-variation-settings: "BRTH" 100; }
+  50%, 62%  { font-variation-settings: "BRTH" 0; }
+  90%, 100% { font-variation-settings: "BRTH" 100; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .giant, .title, .footer-motto { animation: none; font-variation-settings: "BRTH" 100; }
+}
